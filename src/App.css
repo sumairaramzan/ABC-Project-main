@@ -4,7 +4,7 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 @keyframes App-logo-spin {
@@ -247,3 +247,38 @@ body,
     gap: 0px !important;
   }
 }
+
+.avatarGridWrapper {
+  max-height: 60vh;
+}
+
+@media (max-width: 1440px) {
+  .avatarGridWrapper {
+    max-height: 65vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .avatarGridWrapper {
+    max-height: 42vh;
+  }
+}
+
+@media (max-width: 420px) {
+  .avatarGridWrapper {
+    max-height: 19vh;
+  }
+}
+
+@media (max-width: 375px) {
+  .avatarGridWrapper {
+    max-height: 20vh;
+  }
+}
+
+@media (max-width: 320px) {
+  .avatarGridWrapper {
+    max-height: 20vh;
+  }
+}
+

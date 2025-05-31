@@ -35,7 +35,7 @@ const SelectCharater = ({ setCurrentScreen }) => {
     padding: "25px 15px",
     backgroundColor: "#5daeff",
     boxSizing: "border-box",
-    height: "100vh",
+   
    
   },
  heading: {
@@ -73,8 +73,10 @@ const SelectCharater = ({ setCurrentScreen }) => {
   boxSizing: "border-box",
 
   maxHeight: "60vh",         // ✅ Limit height
-  overflowY: "auto",         // ✅ Enable scroll only if overflow
+  overflowY: "auto", 
+          // ✅ Enable scroll only if overflow
 }
+
 ,
 
 

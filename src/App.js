@@ -1560,7 +1560,7 @@ function App() {
   const [showSplash, setShowSplash] = useState(false);
   // App's return statement
   return (
-    <div style={{ height: "100vh", overflow: "hidden" }}>
+    <div style={{ height: "100vh" }}>
       {showIntro ? (
         <AnimatedIntro
           onStart={() => {
