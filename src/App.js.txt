@@ -1,0 +1,109 @@
+import React, { useState } from 'react';
+import { Card } from './components/ui/card';
+import { Button } from './components/ui/button';
+
+const DemoApp = () => {
+  const [currentScreen, setCurrentScreen] = useState('home');
+
+  const HomeScreen = () => (
+    <div className="flex flex-col items-center space-y-4">
+      <div className="text-5xl mb-2">🐰</div>
+      <h1 className="text-4xl font-bold mb-8 text-pink-500">ABC Zoo</h1>
+      <Button 
+        onClick={() => setCurrentScreen('learn')}
+        className="w-full max-w-xs bg-blue-100 hover:bg-blue-200 text-blue-800"
+      >
+        🐬 Learn Alphabet
+      </Button>
+      <Button 
+        onClick={() => setCurrentScreen('games')}
+        className="w-full max-w-xs bg-green-100 hover:bg-green-200 text-green-800"
+      >
+        🐵 Alphabet Games
+      </Button>
+      <Button 
+        onClick={() => setCurrentScreen('progress')}
+        className="w-full max-w-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-800"
+      >
+        🦁 My Progress
+      </Button>
+    </div>
+  );
+
+  const LearnScreen = () => (
+    <div className="text-center">
+      <h2 className="text-2xl font-bold mb-4">Learn the Alphabet</h2>
+      <div className="text-9xl mb-4">🐘</div>
+      <div className="text-8xl font-bold mb-4">A</div>
+      <p className="text-xl mb-6">A is for Elephant</p>
+      <div className="flex justify-between w-full">
+        <Button variant="outline">Previous</Button>
+        <Button variant="outline">Next</Button>
+      </div>
+    </div>
+  );
+
+  const GamesScreen = () => (
+    <div className="text-center">
+      <h2 className="text-2xl font-bold mb-4">Alphabet Games</h2>
+      <div className="space-y-4">
+        <Button className="w-full bg-green-100 text-green-800">
+          🎯 Letter Match
+        </Button>
+        <Button className="w-full bg-blue-100 text-blue-800">
+          🎮 Letter Hunt
+        </Button>
+        <Button className="w-full bg-purple-100 text-purple-800">
+          🎪 Zoo Letters
+        </Button>
+      </div>
+    </div>
+  );
+
+  const ProgressScreen = () => (
+    <div className="text-center">
+      <h2 className="text-2xl font-bold mb-4">My Progress</h2>
+      <div className="space-y-4">
+        <div className="bg-green-100 rounded-lg p-4">
+          <h3 className="font-bold">Letters Learned</h3>
+          <div className="text-2xl">A B C D E F</div>
+        </div>
+        <div className="bg-blue-100 rounded-lg p-4">
+          <h3 className="font-bold">Games Completed</h3>
+          <div className="text-4xl">🏆 3</div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderScreen = () => {
+    switch(currentScreen) {
+      case 'learn':
+        return <LearnScreen />;
+      case 'games':
+        return <GamesScreen />;
+      case 'progress':
+        return <ProgressScreen />;
+      default:
+        return <HomeScreen />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-yellow-50 p-4">
+      <Card className="w-full max-w-md mx-auto p-6">
+        {renderScreen()}
+        {currentScreen !== 'home' && (
+          <Button 
+            onClick={() => setCurrentScreen('home')} 
+            className="mt-4 w-full"
+          >
+            Back to Home
+          </Button>
+        )}
+      </Card>
+    </div>
+  );
+};
+
+export default DemoApp;
