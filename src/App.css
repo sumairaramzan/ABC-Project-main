@@ -376,4 +376,9 @@ body,
   .avatarGridWrapper {
     max-height: 35vh;
   }
+      .arrow-next {
+        bottom: 14px;
+        right: 80px;
+        width: 30px;
+    }
 }
