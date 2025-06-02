@@ -16,7 +16,7 @@ class ChooseGame extends React.Component {
         </button>
 
         <div className="board">
-          <h1 className="heading">Choose a Game</h1>
+          <h1 className="heading">Choosiiie a Game</h1>
 
           <div className="game-options">
             <div
@@ -61,10 +61,15 @@ class ChooseGame extends React.Component {
             background-repeat: no-repeat;
             background-position: center;
             width: 100%;
-            max-width: 900px;
-            aspect-ratio: 10 / 11;
+            max-width: 1200px;
+            height: 988px;
             position: relative;
             margin-top: 22px;
+          }
+          @media (max-width: 1024px) {
+            .board {
+              height: 891px;
+            }
           }
 
           .back-button {
@@ -129,8 +134,7 @@ class ChooseGame extends React.Component {
               top: 160px;
             }
             .board {
-              max-width: 660px;
-              margin-top: 94px;
+              height: 801px;
             }
 
             .game-card {
@@ -148,14 +152,13 @@ class ChooseGame extends React.Component {
             }
 
             .game-card {
-              width: 100px;
-              height: 100px;
+              width: 200px;
+              height: 200px;
             }
           }
           @media (max-width: 425px) {
             .board {
               max-width: 340px;
-              margin-top: 324px;
             }
             .heading {
               top: 60px;
@@ -171,21 +174,22 @@ class ChooseGame extends React.Component {
             }
           }
           @media (max-width: 320px) {
-           .choose-game-container {
-            min-height: 100vh;
-            width: 100%;
-            background-image: url(${BackgroundImage});
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-          }
+            .choose-game-container {
+              min-height: 100vh;
+              width: 100%;
+              background-image: url(${BackgroundImage});
+              background-size: cover;
+              background-repeat: no-repeat;
+              background-position: center;
+              position: relative;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            }
             .board {
-              max-width: 280px;
-              margin-top: 374px;
+              margin-top: 450px;
+              max-width: 310px;
+              height: 300px !important;
             }
             .heading {
               top: 40px;
@@ -197,7 +201,7 @@ class ChooseGame extends React.Component {
             }
             .game-options {
               gap: 0rem;
-              top: 103px;
+              top: 101px;
             }
           }
         `}</style>

@@ -833,170 +833,116 @@ function App() {
     };
 
     return (
-      <div
-        className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgImage})` }}
+     <div
+  className="game-wrapper"
+  style={{ backgroundImage: `url(${bgImage})` }}
+>
+  <div className="game-container">
+    {/* Header */}
+    <div className="game-header">
+      <button onClick={() => setCurrentGame(null)}>
+        <img src={arrowLeft} alt="arrow" style={{ width: 28, height: 28 }} />
+      </button>
+      <h2 className="game-title">Letter Match</h2>
+      <button
+        onClick={() => {
+          if (!isSpeaking) {
+            setSoundEnabled(!soundEnabled);
+            if (!soundEnabled) playSound(currentLetter.char, currentLetter.name);
+          }
+        }}
       >
-        <div
-          className="
-        rounded-2xl
-        shadow-md
-        p-3
-        w-full
-        max-w-[95vw]
-        sm:max-w-[900px]
-        bg-[#A4C7FF]
-        border-[6px] border-[#357AE8]
-        flex flex-col justify-start
-      "
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between mb-4 px-2">
-            <button onClick={() => setCurrentGame(null)}>
-              <img
-                src={arrowLeft}
-                alt="arrow"
-                className="w-6 h-6 sm:w-7 sm:h-7"
-              />
-            </button>
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white text-center">
-              Letter Match
-            </h2>
-            <button
-              onClick={() => {
-                if (!isSpeaking) {
-                  if (soundEnabled) {
-                    setSoundEnabled(false);
-                  } else {
-                    setSoundEnabled(true);
-                    playSound(currentLetter.char, currentLetter.name);
-                  }
-                }
-              }}
-            >
-              <img
-                src={soundEnabled ? cartoonIcon : cartoonIconOff}
-                alt={soundEnabled ? "Cartoon Sound On" : "Cartoon Sound Off"}
-                className="w-[64px] h-[64px] object-contain transition-opacity duration-300"
-              />
-            </button>
-          </div>
+        <img
+          src={soundEnabled ? cartoonIcon : cartoonIconOff}
+          alt={soundEnabled ? "Cartoon Sound On" : "Cartoon Sound Off"}
+          style={{ width: 64, height: 64, objectFit: "contain", transition: "opacity 0.3s" }}
+        />
+      </button>
+    </div>
 
-          {/* Cards Grid */}
-          {/* Cards Grid */}
-          <div className="w-full flex justify-center px-2 mb-6">
-            <div className="w-full max-w-[95vw] sm:max-w-[1000px] md:max-w-[1100px] lg:max-w-[1200px] xl:max-w-[1400px] px-2">
-              <div
-                className="
-        grid 
-        grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 
-        gap-2 sm:gap-3 md:gap-4 
-        p-3 
-        bg-blue-400 
-        rounded-xl
-        justify-items-center
-        min-h-[400px]
-        max-h-[70vh]
-        overflow-y-auto
-      "
-              >
-                {cards.map((card) => {
-                  const isFlipped =
-                    flippedCards.includes(card.id) ||
-                    matchedPairs.includes(card.value);
-                  const backgroundUrl = isFlipped ? back : cardFront;
+    {/* Grid */}
+    <div className="card-grid-wrapper">
+      <div className="card-grid-inner">
+     <div className="card-grid">
+  {cards.map((card) => {
+    const isFlipped = flippedCards.includes(card.id) || matchedPairs.includes(card.value);
+    const backgroundUrl = isFlipped ? back : cardFront;
 
-                  return (
-                    <motion.div
-                      key={card.id}
-                      className="
-              w-[clamp(60px,10vw,110px)]
-              aspect-[88/121]
-              cursor-pointer 
-              rounded-xl 
-              shadow-md 
-              flex 
-              items-center 
-              justify-center 
-              bg-cover 
-              bg-center 
-              transition-all 
-              duration-300 
-              overflow-hidden
-            "
-                      style={{ backgroundImage: `url(${backgroundUrl})` }}
-                      onClick={() => handleCardClick(card)}
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      {isFlipped &&
-                        (card.type === "picture" || card.type === "letter" ? (
-                          <img
-                            src={card.content}
-                            alt={card.name}
-                            className="max-w-full max-h-full object-contain"
-                            draggable={false}
-                          />
-                        ) : (
-                          <span className="text-sm sm:text-base font-semibold">
-                            {card.content}
-                          </span>
-                        ))}
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Progress Bar & Moves */}
-          <div className="w-full mb-3 px-1">
-            <div className="flex items-center justify-between mb-1">
-              <div className="w-full bg-gray-200 rounded-full h-2.5 relative">
-                <div
-                  className="bg-yellow-400 h-2.5 rounded-full"
-                  style={{ width: `${score}%` }}
-                />
-              </div>
-              <span className="text-white text-xs ml-2">{score}%</span>
-            </div>
-            <div className="text-white text-sm">Moves: {moves}</div>
-          </div>
-
-          {/* Celebration Dialog */}
-          {showCelebration && (
-            <CelebrationDialog
-              onRestart={() => {
-                setShowCelebration(false);
-                setCards([]);
-                setFlippedCards([]);
-                setMatchedPairs([]);
-                setMoves(0);
-                setScore(0);
-                const gameData = alphabetData.slice(0, 6);
-                const cardPairs = gameData.flatMap((item) => [
-                  {
-                    id: `letter_${item.letter}`,
-                    type: "letter",
-                    value: item.letter,
-                    content: item.letter,
-                    name: item.name,
-                  },
-                  {
-                    id: `picture_${item.animal}`,
-                    type: "picture",
-                    value: item.letter,
-                    content: item.animal,
-                    name: item.name,
-                  },
-                ]);
-                setCards([...cardPairs].sort(() => Math.random() - 0.5));
-              }}
-              onHome={() => setCurrentScreen("home")}
+    return (
+      <motion.div
+        key={card.id}
+        className="card"
+        style={{ backgroundImage: `url(${backgroundUrl})` }}
+        onClick={() => handleCardClick(card)}
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 300 }}
+      >
+        {isFlipped &&
+          (card.type === "picture" || card.type === "letter" ? (
+            <img
+              src={card.content}
+              alt={card.name}
+              className="card-content"
+              draggable={false}
             />
-          )}
-        </div>
+          ) : (
+            <span className="card-text">{card.content}</span>
+          ))}
+      </motion.div>
+    );
+  })}
+</div>
+
+
       </div>
+    </div>
+
+    {/* Progress */}
+    <div className="progress-section">
+      <div className="progress-bar-container">
+        <div className="progress-bar">
+          <div className="progress-fill" style={{ width: `${score}%` }} />
+        </div>
+        <span className="progress-label">{score}%</span>
+      </div>
+      <div className="moves">Moves: {moves}</div>
+    </div>
+
+    {/* Celebration Dialog */}
+    {showCelebration && (
+      <CelebrationDialog
+        onRestart={() => {
+          setShowCelebration(false);
+          setCards([]);
+          setFlippedCards([]);
+          setMatchedPairs([]);
+          setMoves(0);
+          setScore(0);
+          const gameData = alphabetData.slice(0, 6);
+          const cardPairs = gameData.flatMap((item) => [
+            {
+              id: `letter_${item.letter}`,
+              type: "letter",
+              value: item.letter,
+              content: item.letter,
+              name: item.name,
+            },
+            {
+              id: `picture_${item.animal}`,
+              type: "picture",
+              value: item.letter,
+              content: item.animal,
+              name: item.name,
+            },
+          ]);
+          setCards([...cardPairs].sort(() => Math.random() - 0.5));
+        }}
+        onHome={() => setCurrentScreen("home")}
+      />
+    )}
+  </div>
+</div>
+
     );
   };
   // LetterHuntGame Component
@@ -1574,7 +1520,7 @@ function App() {
   const [showSplash, setShowSplash] = useState(false);
   // App's return statement
   return (
-    <div style={{ height: "100vh" }}>
+    <div style={{ height: "100vh" ,msOverflowY:"scroll" }}>
       {showIntro ? (
         <AnimatedIntro
           onStart={() => {

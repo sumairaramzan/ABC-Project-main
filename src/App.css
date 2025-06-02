@@ -65,24 +65,24 @@ body,
 
 .footer-number {
   position: absolute;
- bottom: 46px;
-    left: 420px;
+  bottom: 46px;
+  left: 420px;
   font-weight: 500;
   font-size: 28px;
 }
 
 .arrow-next {
-     position: absolute;
-    bottom: 35px;
-    right: 280px;
-    width: 60px;
-    cursor: pointer;
+  position: absolute;
+  bottom: 35px;
+  right: 280px;
+  width: 60px;
+  cursor: pointer;
 }
 
 .arrow-back {
   position: absolute;
- bottom: 33px;
-    left: 322px;
+  bottom: 33px;
+  left: 322px;
   width: 60px;
   cursor: pointer;
 }
@@ -131,7 +131,21 @@ body,
 }
 
 /* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .board {
+    height: 800px;
+  }
+}
+@media (max-width: 1440px) {
+  .board {
+    height: 892px !important;
+  }
+}
+
 @media (max-width: 768px) {
+      .board {
+        height: 802px !important;
+    }
   .boardYellow {
     width: 100%;
     max-width: 600px;
@@ -200,11 +214,11 @@ body,
     max-height: 40vh;
     overflow-y: scroll;
   }
-      .arrow-back {
-        left: 97px;
-        width: 30px;
-        bottom: 14px;
-    }
+  .arrow-back {
+    left: 97px;
+    width: 30px;
+    bottom: 14px;
+  }
 
   .footer-number {
     bottom: 15px;
@@ -266,24 +280,29 @@ body,
   }
 }
 @media (max-width: 375px) {
-    .arrow-back {
-        left: 68px;
-        width: 30px;
-        bottom: 14px;
-    }
-        .footer-number {
-        bottom: 15px;
-        left: 120px;
-        font-size: 20px;
-    }
-        .arrow-next {
-        bottom: 14px;
-        right: 90px;
-        width: 30px;
-    }
+  .arrow-back {
+    left: 68px;
+    width: 30px;
+    bottom: 14px;
   }
+  .footer-number {
+    bottom: 15px;
+    left: 120px;
+    font-size: 20px;
+  }
+  .arrow-next {
+    bottom: 14px;
+    right: 90px;
+    width: 30px;
+  }
+}
 
 @media (max-width: 320px) {
+    .board {
+              margin-top: 450px;
+              max-width: 310px;
+              height: 300px !important;
+            }
   .content-row {
     display: block;
     gap: 0px;
@@ -305,19 +324,19 @@ body,
     width: 100%;
   }
   .footer-number {
-          bottom: 16px;
-        left: 110px;
-        font-size: 20px;
+    bottom: 16px;
+    left: 110px;
+    font-size: 20px;
   }
-  .learn-container{
+  .learn-container {
     padding: 5px;
   }
-      .letter-box {
-        width: 270px;
-        height: 200px;
-        margin: auto;
-        padding-top: 71px;
-    }
+  .letter-box {
+    width: 270px;
+    height: 200px;
+    margin: auto;
+    padding-top: 71px;
+  }
 
   /* .arrow-next {
     bottom: 78px;
@@ -376,9 +395,182 @@ body,
   .avatarGridWrapper {
     max-height: 35vh;
   }
-      .arrow-next {
-        bottom: 14px;
-        right: 80px;
-        width: 30px;
-    }
+  .arrow-next {
+    bottom: 14px;
+    right: 80px;
+    width: 30px;
+  }
 }
+
+/* Background Wrapper */
+.game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Main Container */
+.game-container {
+  border: 6px solid #357AE8;
+  border-radius: 16px;
+  background-color: #A4C7FF;
+  padding: 12px;
+  width: 95vw;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0 8px;
+}
+
+.game-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .game-title {
+    font-size: 1.75rem;
+  }
+}
+@media (min-width: 768px) {
+  .game-title {
+    font-size: 2rem;
+  }
+}
+
+/* Cards Grid */
+.card-grid-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 8px;
+  margin-bottom: 1.5rem;
+}
+
+.card-grid-inner {
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Default: 2 columns for small screens */
+  gap: 16px;
+  padding: 16px;
+  background-color: #60a5fa; /* same as Tailwind's bg-blue-400 */
+  border-radius: 12px;
+  justify-items: center;
+  min-height: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Medium and up: 6 columns */
+@media (min-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Individual Card */
+.card {
+  width: clamp(70px, 10vw, 120px);
+  aspect-ratio: 88 / 121;
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  overflow: hidden;
+}
+
+.card-content {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.card-text {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Progress & Moves */
+.progress-section {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.progress-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  background-color: #e5e7eb; /* gray-200 */
+  height: 10px;
+  border-radius: 9999px;
+  width: 100%;
+  position: relative;
+}
+
+.progress-fill {
+  background-color: #facc15; /* yellow-400 */
+  height: 10px;
+  border-radius: 9999px;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  color: white;
+  margin-left: 8px;
+}
+
+.moves {
+  font-size: 0.875rem;
+  color: white;
+}
+
+/* Responsive Card Size */
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  .card {
+    width: 100px;
+  }
+}
+@media (max-width: 480px) {
+  .card {
+    width: 90px;
+  }
+  
+}
+@media (max-width: 320px) {
+  .card {
+    width: 90px;
+  }
+}
+
