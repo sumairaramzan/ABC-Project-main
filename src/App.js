@@ -59,6 +59,7 @@ import lAnimal from "./assets/animal_icons/l.svg";
 import mAnimal from "./assets/animal_icons/m.svg";
 import nAnimal from "./assets/animal_icons/n.svg";
 import oAnimal from "./assets/animal_icons/orange.svg";
+import oopsImage from "./assets/images/oopsImage.png"
 import pAnimal from "./assets/animal_icons/p.svg";
 import qAnimal from "./assets/images/queen.svg";
 import rAnimal from "./assets/animal_icons/r.svg";
@@ -621,7 +622,7 @@ function App() {
         </div>
 
         <div className="learn-container">
-          <div className="board">
+          <div className="boardYellow">
             <img
               className="arrow-back-top"
               onClick={goBack}
@@ -1219,104 +1220,117 @@ function App() {
       }
     };
 
-    const CelebrationDialog = ({
-      onRestart,
-      onHome,
-      score,
-      total,
-      onClose,
-    }) => {
-      const rating = getRating(score, total);
+   const CelebrationDialog = ({
+  onRestart,
+  onHome,
+  score,
+  total,
+  onClose,
+}) => {
+  const rating = getRating(score, total);
 
-      return (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 flex items-center justify-center bg-black/30 z-50"
+  const isLowScore = score < 5;
+
+  const imageSrc = isLowScore ? oopsImage : congratulations;
+  const headingText = isLowScore ? "Oops!" : "Congratulations!";
+  const headingColor = isLowScore ? "#E84640" : "#1CA34E";
+  const ratingText = isLowScore ? "Not Good" : rating.text;
+  const ratingColor = isLowScore ? "#2E2E2E" : rating.color;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="fixed inset-0 flex items-center justify-center bg-black/30 z-50"
+    >
+      <motion.div
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", duration: 0.5 }}
+        className="relative bg-white rounded-lg p-6 max-w-xs w-full mx-4 text-center shadow-md"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors"
         >
-          <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", duration: 0.5 }}
-            className="relative bg-white rounded-lg p-6 max-w-xs w-full mx-4 text-center shadow-md"
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <button
-              onClick={onClose}
-              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
 
-            <div className="flex justify-center mb-3">
-              <img src={congratulations} alt="Trophy" />
-            </div>
+        <div className="flex justify-center mb-3">
+          <img src={imageSrc} alt="Result" />
+        </div>
 
-            <h2
-              className="text-2xl font-bold mb-3"
-              style={{ color: "#1CA34E", fontSize: "14px", fontWeight: "500" }}
-            >
-              Congratulations!
-            </h2>
+        <h2
+          className="text-2xl font-bold mb-3"
+          style={{
+            color: headingColor,
+            fontSize: "14px",
+            fontWeight: "500",
+          }}
+        >
+          {headingText}
+        </h2>
 
-            <div className="space-y-1 mb-5">
-              <p
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#2E2E2E",
-                }}
-              >
-                Your Score: {Math.min(score, total)}/{total}. Rating:
-                <span style={{ color: rating.color, marginLeft: "4px" }}>
-                  {rating.text}
-                </span>
-              </p>
-            </div>
+        <div className="space-y-1 mb-5">
+          <p
+            style={{
+              fontSize: "14px",
+              fontWeight: "500",
+              color: "#2E2E2E",
+            }}
+          >
+            Your Score: {Math.min(score, total)}/{total}. Rating:
+            <span style={{ color: ratingColor, marginLeft: "4px" }}>
+              {ratingText}
+            </span>
+          </p>
+        </div>
 
-            <div className="flex space-x-3">
-              <button
-                onClick={onHome}
-                className="flex-1 py-2 px-4 rounded-md transition-colors text-sm border"
-                style={{
-                  backgroundColor: "transparent",
-                  borderColor: "#D0D5DD",
-                  color: "#344054",
-                  fontSize: "15px",
-                  fontWeight: "600",
-                }}
-              >
-                Back to Home
-              </button>
-              <button
-                onClick={onRestart}
-                className="flex-1 py-2 px-4 rounded-md transition-colors text-sm"
-                style={{
-                  backgroundColor: "#E8BE5D",
-                  color: "#344054",
-                  fontSize: "15px",
-                  fontWeight: "600",
-                }}
-              >
-                Play again
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      );
-    };
+        <div className="flex space-x-3">
+          <button
+            onClick={onHome}
+            className="flex-1 py-2 px-4 rounded-md transition-colors text-sm border"
+            style={{
+              backgroundColor: "transparent",
+              borderColor: "#D0D5DD",
+              color: "#344054",
+              fontSize: "13px",
+              fontWeight: "600",
+            }}
+          >
+            Back to Home
+          </button>
+          <button
+            onClick={onRestart}
+            className="flex-1 py-2 px-4 rounded-md transition-colors text-sm"
+            style={{
+              backgroundColor: "#E8BE5D",
+              color: "#344054",
+              fontSize: "13px",
+              fontWeight: "600",
+            }}
+          >
+            Play again
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 
     return (
       <div

@@ -35,7 +35,7 @@ const SelectCharater = ({ setCurrentScreen }) => {
     padding: "25px 15px",
     backgroundColor: "#5daeff",
     boxSizing: "border-box",
-   
+   height:"100vh",
    
   },
  heading: {
@@ -86,6 +86,9 @@ const SelectCharater = ({ setCurrentScreen }) => {
       gap: "20px",
       marginBottom: "20px",
       justifyItems: "center",
+    "@media (max-width: 768px)": {
+    gridTemplateColumns: "repeat(3, minmax(80px, 1fr))",
+  },
     },
     avatarItem: (isSelected) => ({
       width: "100%",          // fill grid cell width
@@ -123,21 +126,27 @@ const SelectCharater = ({ setCurrentScreen }) => {
         />
       </div>
 
-      <div style={styles.avatarGridWrapper}>
-        <div style={styles.avatarGrid}>
-          {avatars.map((avatar, index) => (
-            <img
-              key={index}
-              src={avatar}
-              alt={`Avatar ${index + 1}`}
-              style={styles.avatarItem(selectedAvatar === avatar)}
-              onClick={() => setSelectedAvatar(avatar)}
-            />
-          ))}
-        </div>
-        <button  disabled={!selectedAvatar}
-              onClick={() => setCurrentScreen("home")} style={styles.getStartedBtn}>Get Started</button>
-      </div>
+     <div className="avatarGridWrapper">
+  <div className="grid grid-cols-3 md:grid-cols-6 gap-5 justify-items-center mb-5">
+    {avatars.map((avatar, index) => (
+      <img
+        key={index}
+        src={avatar}
+        alt={`Avatar ${index + 1}`}
+        style={styles.avatarItem(selectedAvatar === avatar)}
+        onClick={() => setSelectedAvatar(avatar)}
+      />
+    ))}
+  </div>
+  <button
+    disabled={!selectedAvatar}
+    onClick={() => setCurrentScreen("home")}
+    style={styles.getStartedBtn}
+  >
+    Get Started
+  </button>
+</div>
+
     </div>
   );
 };

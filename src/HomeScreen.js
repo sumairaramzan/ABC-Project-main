@@ -188,7 +188,7 @@ class HomeScreen extends React.Component {
               height: 60px;
             }
             .board {
-              margin-top: 413px;
+              margin-top: 353px;
               max-width: 330px;
             }
           }
