@@ -7,16 +7,29 @@ import BackIcon from "../assets/images/back.svg";
 
 class ChooseGame extends React.Component {
   render() {
-    const { setCurrentGame, goBack } = this.props;
+    const { goBack, selectedAvatar, setCurrentGame } = this.props;
 
     return (
       <div className="choose-game-container">
+         {selectedAvatar && (
+            <img
+              src={selectedAvatar}
+              alt="User Avatar"
+              className="user-avatar1"
+              
+              onClick={() => {
+                this.props.setIsAvatarUpdate(true);
+                this.props.setCurrentScreen("selectCharacter");
+              }}
+            />
+          )}
         <button onClick={goBack} className="back-button" aria-label="Go back">
           <img src={BackIcon} alt="Back" />
         </button>
 
         <div className="board">
           <h1 className="heading">Choosiiie a Game</h1>
+         
 
           <div className="game-options">
             <div
@@ -157,16 +170,24 @@ class ChooseGame extends React.Component {
             }
           }
           @media (max-width: 425px) {
+            .choose-game-container {
+              background-size: cover;
+            }
             .board {
-              max-width: 340px;
+              max-width: 380px;
+              height: 400px !important;
+              margin-top: 370px;
             }
             .heading {
-              top: 60px;
+              top: 67px;
               left: 48%;
+              font-size: 25px;
+              font-weight: 400;
+              color: #66501e;
             }
             .game-card {
-              width: 140px;
-              height: 100px;
+              width: 156px;
+              height: 120px;
             }
             .game-options {
               gap: 0rem;
@@ -192,8 +213,11 @@ class ChooseGame extends React.Component {
               height: 300px !important;
             }
             .heading {
-              top: 40px;
+              top: 54px;
               left: 49%;
+              font-size: 20px;
+              font-weight: 400;
+              color: #66501e;
             }
             .game-card {
               width: 118px;
@@ -201,7 +225,7 @@ class ChooseGame extends React.Component {
             }
             .game-options {
               gap: 0rem;
-              top: 101px;
+              top: 91px;
             }
           }
         `}</style>

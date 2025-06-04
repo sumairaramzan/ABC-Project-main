@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar1 from "../assets/images/avatar1.svg";
 import Avatar2 from "../assets/images/avatar2.svg";
 import Avatar3 from "../assets/images/avatar3.svg";
@@ -19,36 +19,56 @@ import Avatar17 from "../assets/images/avatar17.svg";
 import Avatar18 from "../assets/images/avatar18.svg";
 
 const avatars = [
-  Avatar1, Avatar2, Avatar3, Avatar4,
-  Avatar5, Avatar6, Avatar7, Avatar8,
-  Avatar9, Avatar10, Avatar11, Avatar12,
-  Avatar13, Avatar14, Avatar15, Avatar16,
-  Avatar17, Avatar18,
+  Avatar1,
+  Avatar2,
+  Avatar3,
+  Avatar4,
+  Avatar5,
+  Avatar6,
+  Avatar7,
+  Avatar8,
+  Avatar9,
+  Avatar10,
+  Avatar11,
+  Avatar12,
+  Avatar13,
+  Avatar14,
+  Avatar15,
+  Avatar16,
+  Avatar17,
+  Avatar18,
 ];
 
-const SelectCharater = ({ setCurrentScreen }) => {
-  const [selectedAvatar, setSelectedAvatar] = useState(avatars[0]);
+const SelectCharater = ({
+  setCurrentScreen,
+  selectedAvatar,
+  setSelectedAvatar,
+  isAvatarUpdate,
+  setIsAvatarUpdate,
+}) => {
+  useEffect(() => {
+    if (!selectedAvatar) {
+      setSelectedAvatar(avatars[0]);
+    }
+  }, [selectedAvatar, setSelectedAvatar]);
+
+  const handleSubmit = () => {
+    setCurrentScreen("home");
+    setIsAvatarUpdate(false);
+  };
 
   const styles = {
     container: {
-    fontFamily: "Arial, sans-serif",
-    padding: "25px 15px",
-    backgroundColor: "#5daeff",
-    boxSizing: "border-box",
-   height:"100vh",
-   
-  },
- heading: {
-  fontSize: "56px",
-  fontWeight: "bold",
-  color: "#ffcc00",
-  marginBottom: "10px",
-  WebkitTextStroke: "1.5px black", // ⬅️ Stroke around the letters
-},
+      fontFamily: "Arial, sans-serif",
+      padding: "25px 15px",
+      backgroundColor: "#5daeff",
+      boxSizing: "border-box",
+      height: "100vh",
+    },
+
     subheading: {
       fontSize: "28px",
       color: "#fff",
-     
     },
     selectedAvatar: {
       display: "flex",
@@ -56,44 +76,40 @@ const SelectCharater = ({ setCurrentScreen }) => {
       marginBottom: "20px",
     },
     selectedAvatarImg: {
-      width: "80px",
-      height: "80px",
+      width: "150px",
+      height: "150px",
       borderRadius: "50%",
-      border: "3px solid white",
     },
-  avatarGridWrapper: {
-  backgroundColor: "#ffe09c",
-  padding: "20px",
-  borderRadius: "12px",
-  width: "90vw",
-  maxWidth: "1000px",
-  textAlign: "center",
-  margin: "auto",
-  boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-  boxSizing: "border-box",
+    avatarGridWrapper: {
+      backgroundColor: "#ffe09c",
+      padding: "20px",
+      borderRadius: "12px",
+      width: "90vw",
+      maxWidth: "1000px",
+      textAlign: "center",
+      margin: "auto",
+      boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+      boxSizing: "border-box",
 
-  maxHeight: "60vh",         // ✅ Limit height
-  overflowY: "auto", 
-          // ✅ Enable scroll only if overflow
-}
-
-,
-
+      maxHeight: "60vh", // ✅ Limit height
+      overflowY: "auto",
+      // ✅ Enable scroll only if overflow
+    },
 
     avatarGrid: {
       display: "grid",
-      gridTemplateColumns: "repeat(6, minmax(80px, 1fr))",  // 6 avatars per row responsive
+      gridTemplateColumns: "repeat(5, minmax(80px, 1fr))", // 6 avatars per row responsive
       gap: "20px",
       marginBottom: "20px",
       justifyItems: "center",
-    "@media (max-width: 768px)": {
-    gridTemplateColumns: "repeat(3, minmax(80px, 1fr))",
-  },
+      "@media (max-width: 768px)": {
+        gridTemplateColumns: "repeat(3, minmax(80px, 1fr))",
+      },
     },
     avatarItem: (isSelected) => ({
-      width: "100%",          // fill grid cell width
-      maxWidth: "100px",      // max size
-      aspectRatio: "1 / 1",   // keep square
+      width: "100%", // fill grid cell width
+      maxWidth: "100px", // max size
+      aspectRatio: "1 / 1", // keep square
       borderRadius: "50%",
       border: isSelected ? "3px solid #007bff" : "2px solid transparent",
       cursor: "pointer",
@@ -113,8 +129,8 @@ const SelectCharater = ({ setCurrentScreen }) => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.heading}>Select your Character</div>
-      <div style={styles.subheading}>
+      <div className="heading">Select your Character</div>
+      <div className="subheading">
         Every hero needs a face — choose yours to begin the adventure.
       </div>
 
@@ -126,27 +142,26 @@ const SelectCharater = ({ setCurrentScreen }) => {
         />
       </div>
 
-     <div className="avatarGridWrapper">
-  <div className="grid grid-cols-3 md:grid-cols-6 gap-5 justify-items-center mb-5">
-    {avatars.map((avatar, index) => (
-      <img
-        key={index}
-        src={avatar}
-        alt={`Avatar ${index + 1}`}
-        style={styles.avatarItem(selectedAvatar === avatar)}
-        onClick={() => setSelectedAvatar(avatar)}
-      />
-    ))}
-  </div>
-  <button
-    disabled={!selectedAvatar}
-    onClick={() => setCurrentScreen("home")}
-    style={styles.getStartedBtn}
-  >
-    Get Started
-  </button>
-</div>
-
+      <div className="avatarGridWrapper">
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-5 justify-items-center mb-5">
+          {avatars.map((avatar, index) => (
+            <img
+              key={index}
+              src={avatar}
+              alt={`Avatar ${index + 1}`}
+              style={styles.avatarItem(selectedAvatar === avatar)}
+              onClick={() => setSelectedAvatar(avatar)}
+            />
+          ))}
+        </div>
+        <button
+          disabled={!selectedAvatar}
+          onClick={handleSubmit}
+          style={styles.getStartedBtn}
+        >
+          {isAvatarUpdate ? "Update" : "Get Started"}
+        </button>
+      </div>
     </div>
   );
 };

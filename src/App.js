@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import CustomErrorBoundary from "./CustomErrorBoundary";
 import "./App.css";
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
+import Joyride from 'react-joyride';
 import { Card } from "./components/ui/card";
 import { Button } from "./components/ui/button";
 import { motion } from "framer-motion";
@@ -180,13 +183,12 @@ const DIFFICULTY_LEVELS = {
 };
 
 const SOUNDS = {
-  celebration: new Audio(
-    "https://assets.mixkit.co/active_storage/sfx/2153/2153-preview.mp3"
-  ),
-  match: new Audio(
-    "https://assets.mixkit.co/active_storage/sfx/1111/1111-preview.mp3"
-  ),
+  celebration: new Audio("https://assets.mixkit.co/active_storage/sfx/2153/2153-preview.mp3"),
+  match: new Audio("https://assets.mixkit.co/active_storage/sfx/1111/1111-preview.mp3"),
+  wrongAttempt: new Audio("https://assets.mixkit.co/active_storage/sfx/1382/1382-preview.mp3"), // Example wrong sound
 };
+
+
 
 // Alphabet data
 const alphabetData = [
@@ -377,6 +379,11 @@ const alphabetData = [
 function App() {
   const [currentScreen, setCurrentScreen] = useState("selectCharacter");
   const [previousScreen, setPreviousScreen] = useState(null);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [isAvatarUpdate, setIsAvatarUpdate] = useState(false); 
+
+  
+
   const [isLoading, setIsLoading] = useState(true);
 
   const handleScreenChange = (newScreen) => {
@@ -870,25 +877,32 @@ function App() {
 
     return (
       <motion.div
-        key={card.id}
-        className="card"
-        style={{ backgroundImage: `url(${backgroundUrl})` }}
-        onClick={() => handleCardClick(card)}
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 300 }}
-      >
-        {isFlipped &&
-          (card.type === "picture" || card.type === "letter" ? (
-            <img
-              src={card.content}
-              alt={card.name}
-              className="card-content"
-              draggable={false}
-            />
-          ) : (
-            <span className="card-text">{card.content}</span>
-          ))}
-      </motion.div>
+      key={card.id}
+      className="card"
+      style={{ backgroundImage: `url(${backgroundUrl})` }}
+      onClick={() => handleCardClick(card)}
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: "spring", stiffness: 300 }}
+    >
+      {isFlipped &&
+        (card.type === "picture" || card.type === "letter" ? (
+          <img
+            src={card.content}
+            alt={card.name}
+            className="card-content"
+            draggable={false}
+            style={card.type === "letter" ? { width: "120px", height: "auto" } : {}}
+          />
+        ) : (
+          <span
+            className="card-text"
+            style={card.type === "letter" ? { fontSize: "100px" } : {}}
+          >
+            {card.content}
+          </span>
+        ))}
+    </motion.div>
+    
     );
   })}
 </div>
@@ -958,6 +972,8 @@ function App() {
     const [showGameOver, setShowGameOver] = useState(false);
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [totalQuestions] = useState(10);
+    const [gameReady, setGameReady] = useState(false);
+
 
     // Helper function to calculate rating
     const getRating = (score, total) => {
@@ -968,97 +984,94 @@ function App() {
       return { text: "Try Again", color: "#F44336" };
     };
 
-    const distractionEmojis = [
-      apple,
-      ball,
-      cat,
-      dog,
-      elephant,
-      fish,
-      giraffe,
-      hat,
-      icecream,
-      juice,
-      penguin,
-      juice,
-      koala,
-      lion,
-      moon,
-      necklace,
-      orange,
-      penguin,
-      queen,
-      rabit,
-      sun,
-      tree,
-      unicorn,
-      violin,
-      whale,
-      xylophone,
-      yellow,
-      zebra,
-    ];
 
-    const generatePosition = () => ({
-      top: `${Math.random() * 80 + 5}%`,
-      left: `${Math.random() * 80 + 5}%`,
-      transform: `rotate(${Math.random() * 360}deg)`,
-    });
+
+    const generatePosition = (usedPositions, threshold = 12) => {
+      let position;
+      let attempts = 0;
+      do {
+        const top = Math.random() * 80 + 5;
+        const left = Math.random() * 80 + 5;
+        position = {
+          top,
+          left,
+          rotation: Math.random() * 40 - 20,
+        };
+        attempts++;
+      } while (
+        usedPositions.some(
+          (p) =>
+            Math.abs(p.top - position.top) < threshold &&
+            Math.abs(p.left - position.left) < threshold
+        ) &&
+        attempts < 100
+      );
+    
+      usedPositions.push({ top: position.top, left: position.left });
+      return {
+        top: `${position.top}%`,
+        left: `${position.left}%`,
+        rotation: position.rotation,
+      };
+    };
+    
+    
 
     const createGameObjects = (targetLetter) => {
+      const usedPositions = [];
+      const targetObj = alphabetData.find((item) => item.char === targetLetter);
+    
       return [
         // Target letters (3)
         ...Array(3)
           .fill()
           .map((_, i) => ({
             id: `target_${i}`,
-            type: "letter",
-            value: targetLetter,
+            type: "CapitalLetter",
+            value: targetObj.CapitalLetter,
+            char: targetObj.char,
             color: "text-purple-600",
-            ...generatePosition(),
+            ...generatePosition(usedPositions),
           })),
-
+    
         // Decoy letters (12)
         ...Array(12)
           .fill()
-          .map((_, i) => ({
-            id: `decoy${i}`,
-            type: "letter",
-            value:
-              alphabetData[Math.floor(Math.random() * alphabetData.length)]
-                .letter,
-            color: [
-              "text-blue-500",
-              "text-pink-500",
-              "text-green-500",
-              "text-orange-500",
-            ][Math.floor(Math.random() * 4)],
-            ...generatePosition(),
-          })),
-
-        // Distraction emojis (15)
-        ...Array(15)
-          .fill()
-          .map((_, i) => ({
-            id: `distraction${i}`,
-            type: "emoji",
-            value:
-              distractionEmojis[
-                Math.floor(Math.random() * distractionEmojis.length)
-              ],
-            ...generatePosition(),
-          })),
+          .map((_, i) => {
+            const decoy =
+              alphabetData[Math.floor(Math.random() * alphabetData.length)];
+            return {
+              id: `decoy_${i}`,
+              type: "CapitalLetter",
+              value: decoy.CapitalLetter,
+              char: decoy.char,
+              color: [
+                "text-blue-500",
+                "text-pink-500",
+                "text-green-500",
+                "text-orange-500",
+              ][Math.floor(Math.random() * 4)],
+              ...generatePosition(usedPositions),
+            };
+          }),
       ].sort(() => Math.random() - 0.5);
     };
+    
 
-    useEffect(() => {
-      let timer;
-      if (isPlaying && time > 0) {
-        timer = setInterval(() => {
-          setTime((prev) => prev - 1);
-          if (time <= 6 && soundEnabled) {
-            const tickContext = new (window.AudioContext ||
-              window.webkitAudioContext)();
+
+useEffect(() => {
+  let timer;
+  if (isPlaying && gameReady && time > 0) {
+    timer = setInterval(() => {
+      setTime((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          endGame();
+          return 0;
+        } else {
+          // Play ticking sound if near end
+          if (prevTime <= 6 && soundEnabled) {
+            const tickContext = new (window.AudioContext || window.webkitAudioContext)();
             const osc = tickContext.createOscillator();
             const gain = tickContext.createGain();
             osc.connect(gain);
@@ -1068,12 +1081,15 @@ function App() {
             osc.start();
             setTimeout(() => osc.stop(), 100);
           }
-        }, 1000);
-      } else if (time === 0) {
-        endGame();
-      }
-      return () => clearInterval(timer);
-    }, [isPlaying, time, score, soundEnabled]);
+          return prevTime - 1;
+        }
+      });
+    }, 1000);
+  }
+
+  return () => clearInterval(timer);
+}, [isPlaying, gameReady, time, soundEnabled]);
+
 
     const endGame = async () => {
       if (soundEnabled) {
@@ -1122,10 +1138,10 @@ function App() {
 
     const handleClick = async (obj) => {
       if (!isPlaying) return;
-
-      if (obj.type === "letter" && obj.value === currentLetter) {
-        const context = new (window.AudioContext ||
-          window.webkitAudioContext)();
+    
+      // ✅ Correct letter
+      if (obj.type === "CapitalLetter" && obj.char === currentLetter) {
+        const context = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = context.createOscillator();
         const gainNode = context.createGain();
         oscillator.connect(gainNode);
@@ -1134,12 +1150,11 @@ function App() {
         gainNode.gain.value = 0.1;
         oscillator.start();
         setTimeout(() => oscillator.stop(), 100);
-
-        // Only increment score if we haven't reached the maximum
+    
         if (score < totalQuestions) {
           setScore((prevScore) => prevScore + 1);
         }
-
+    
         if (soundEnabled) {
           try {
             const messages = [
@@ -1158,13 +1173,32 @@ function App() {
             console.error("Speech synthesis error:", error);
           }
         }
-
-        const newLetter =
-          alphabetData[Math.floor(Math.random() * alphabetData.length)].char;
+    
+        const newLetter = alphabetData[Math.floor(Math.random() * alphabetData.length)].char;
         setCurrentLetter(newLetter);
         setGameObjects(createGameObjects(newLetter));
+    
+      } 
+      // ❌ Wrong letter
+      else if (obj.type === "CapitalLetter" && obj.char !== currentLetter) {
+        if (soundEnabled && SOUNDS.wrongAttempt) {
+          SOUNDS.wrongAttempt.play();
+        }
+    
+        try {
+          const utterance = await initSpeech("Oops! Wrong letter!", {
+            pitch: 1.0,
+            rate: 0.7,
+            volume: 1.0,
+          });
+          window.speechSynthesis.speak(utterance);
+        } catch (err) {
+          console.error("Speech error on wrong attempt:", err);
+        }
       }
     };
+    
+    
 
    const CelebrationDialog = ({
   onRestart,
@@ -1253,7 +1287,7 @@ function App() {
               backgroundColor: "transparent",
               borderColor: "#D0D5DD",
               color: "#344054",
-              fontSize: "13px",
+              fontSize: "12px",
               fontWeight: "600",
             }}
           >
@@ -1276,62 +1310,169 @@ function App() {
     </motion.div>
   );
 };
+const steps = [
+  {
+    element: '.back-arrow',
+    popover: {
+      title: 'Back Button',
+      description: 'Click here to go back to the main menu.',
+    },
+    stageRadius: 50,
+  },
+  {
+    element: '.game-title',
+    popover: {
+      title: 'Game Title',
+      description: 'This is the name of your current game.',
+    },
+    stageRadius: 80,
+  },
+  {
+    element: '.score',
+    popover: {
+      title: 'Your Score',
+      description: 'Keep track of how many correct answers you’ve gotten.',
+    },
+    stageRadius: 60,
+  },
+  {
+    element: '.time',
+    popover: {
+      title: 'Timer',
+      description: 'You have limited time. Watch it closely!',
+    },
+    stageRadius: 60,
+  },
+  {
+    element: '.target-letter',
+    popover: {
+      title: 'Target Letter',
+      description: 'This is the letter you need to find.',
+    },
+    stageRadius: 60,
+  },
+  {
+    element: '.game-board-wrapper',
+    popover: {
+      title: 'Game Board',
+      description: 'Tap the correct letter here!',
+    },
+    stageRadius: 150,
+  },
+  {
+    element: '.celebration',
+    popover: {
+      title: 'Game Over',
+      description: 'You’ve finished! Restart or go home.',
+      position: 'center',
+    },
+    stageRadius: 80,
+  },
+];
+
+
+useEffect(() => {
+  const tour = driver({
+    showButtons: true,
+    allowClose: true,
+    overlayOpacity: 0.75,
+    nextBtnText: 'Next',
+    prevBtnText: 'Back',
+    doneBtnText: 'Done',
+    steps,
+    stageRadius: 100,
+    onHighlightStarted: () => {
+      // Pause game interaction and stop current sounds
+      SOUNDS.match.currentTime = 0;
+      SOUNDS.match.play();
+
+      // ❌ Cancel any speech like "Let's play Letter Hunt"
+      window.speechSynthesis.cancel();
+    },
+    onDestroyed: () => {
+      // ✅ Tour completed, now start the game
+      setGameReady(true);
+      startGame(); // Speech will now run only after tour is done
+    },
+  });
+
+  setTimeout(() => {
+    tour.drive();
+  }, 500);
+}, []);
+
+
 
 
     return (
-      <div
+      <>
+     
+       <div
         className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center px-2 sm:px-4"
         style={{
           backgroundImage: `url(${letterhunt})`,
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "top center",
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'top center',
         }}
       >
         <div
-          className="rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-[98vw] sm:max-w-[900px] md:max-w-[1100px]"
-          style={{
-            background: "#FFE098",
-            border: "10px solid #B59448",
-          }}
-        >
+  className={`rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-[98vw] sm:max-w-[900px] md:max-w-[1100px] ${
+    time <= 5 ? 'danger-mode' : ''
+  }`}
+  style={{
+    background: '#FFE098',
+  }}
+>
+
           {/* Header */}
-          <div className="flex items-center justify-between mb-4 px-2">
-            <button onClick={() => setCurrentGame(null)}>
+          <div className="game-header flex items-center justify-between mb-4 px-2">
+            <button onClick={() => setCurrentGame(null)} className="back-arrow">
               <img
                 src={arrowLeft}
                 alt="arrow"
-                className="w-6 h-6 sm:w-8 sm:h-8"
+                className="w-10 h-10 sm:w-8 sm:h-8"
               />
             </button>
 
-            <h2 className="text-lg sm:text-2xl font-bold text-black text-center">
+            <h2 className="game-title text-lg sm:text-2xl md:text-4xl font-bold text-black text-center">
               Letter Hunt
             </h2>
 
             <img
               src={cartoonIcon}
-              alt={soundEnabled ? "Sound On" : "Sound Off"}
+              alt={soundEnabled ? 'Sound On' : 'Sound Off'}
               onClick={() => setSoundEnabled(!soundEnabled)}
-              className="w-12 h-12 sm:w-16 sm:h-16 cursor-pointer hover:opacity-80 transition"
+              className="cursor-pointer hover:opacity-80 transition"
             />
           </div>
 
           {/* Game Area */}
           {isPlaying && (
             <>
-              <div className="mb-4 text-sm sm:text-lg font-bold flex justify-between items-center">
-                <span className="text-black">Score: {score}</span>
-                <span style={{ color: time <= 10 ? "#EF4444" : "#0D4B24" }}>
+              <div className="score-time mb-4 text-sm sm:text-lg font-bold flex justify-between items-center">
+                <span className="score text-black" style={{ fontSize: '20px' }}>
+                  Score: {score}
+                </span>
+                <span
+                className="time"
+                  style={{
+                    color: time <= 10 ? '#EF4444' : '#0D4B24',
+                    fontSize: '20px',
+                  }}
+                >
                   Time: {time}s
                 </span>
               </div>
 
               <div
-                className="relative w-full h-[420px] sm:h-[500px] bg-white rounded-xl overflow-hidden flex flex-col justify-start"
-                style={{ paddingBottom: "30px" }}
+                className="game-board-wrapper relative w-full h-[420px] sm:h-[500px] bg-white rounded-xl overflow-hidden flex flex-col justify-start"
+                style={{ paddingBottom: '30px' }}
               >
-                <div className="text-lg sm:text-2xl text-center p-2">
+                <div
+                  className="target-letter text-lg sm:text-2xl text-center p-2"
+                  style={{ fontSize: '28px', fontWeight: '500' }}
+                >
                   Find the letter:
                   {currentLetterObject && (
                     <img
@@ -1346,28 +1487,53 @@ function App() {
                   {gameObjects.map((obj) => (
                     <motion.div
                       key={obj.id}
-                      className={`absolute cursor-pointer text-xl sm:text-3xl ${
-                        obj.color || ""
+                      className={`absolute cursor-pointer z-10 text-xl sm:text-3xl ${
+                        obj.color || ''
                       }`}
                       style={{
                         top: obj.top,
                         left: obj.left,
-                        transform: obj.transform,
+                        transform: `rotate(${
+                          Math.random() * 60 - 30
+                        }deg) translateY(${Math.random() * 20 - 10}px)`,
                       }}
                       onClick={() => handleClick(obj)}
                       whileHover={{ scale: 1.2 }}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ type: "spring", stiffness: 300 }}
+                      initial={{
+                        opacity: 0,
+                        scale: 0,
+                        y: Math.random() * 100 - 50,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                        y: 0,
+                        transition: {
+                          type: 'spring',
+                          stiffness: 100,
+                          damping: 10,
+                          duration: 0.8,
+                        },
+                      }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        bounce: 0.5,
+                      }}
                     >
-                      {typeof obj.value === "string" &&
-                      (obj.value.endsWith(".svg") ||
-                        obj.value.endsWith(".png") ||
-                        obj.value.startsWith("http")) ? (
+                      {typeof obj.value === 'string' &&
+                      (obj.value.endsWith('.svg') ||
+                        obj.value.endsWith('.png') ||
+                        obj.value.startsWith('http')) ? (
                         <img
                           src={obj.value}
-                          alt="letter"
-                          className="w-8 h-8 sm:w-10 sm:h-10"
+                          alt="CapitalLetter"
+                          className="w-16 h-16 sm:w-20 sm:h-20"
+                          style={{
+                            transform: `rotate(${
+                              Math.random() * 40 - 20
+                            }deg)`,
+                          }}
                         />
                       ) : (
                         obj.value
@@ -1380,35 +1546,33 @@ function App() {
           )}
 
           {showGameOver && (
-            <CelebrationDialog
-              onRestart={() => {
-                setShowGameOver(false);
-                startGame();
-              }}
-              onHome={() => setCurrentGame(null)}
-              onClose={() => setShowGameOver(false)}
-              score={score}
-              total={totalQuestions}
-            />
+            <div className="celebration">
+              <CelebrationDialog
+                onRestart={() => {
+                  setShowGameOver(false);
+                  startGame();
+                }}
+                onHome={() => setCurrentGame(null)}
+                onClose={() => setShowGameOver(false)}
+                score={score}
+                total={totalQuestions}
+              />
+            </div>
           )}
         </div>
       </div>
+      </>
     );
   };
   // GamesScreen Component
-  const GamesScreen = ({ setCurrentScreen }) => {
+  const GamesScreen = ({ setCurrentScreen, selectedAvatar, setIsAvatarUpdate  }) => {
     const [currentGame, setCurrentGame] = useState(null);
 
     if (currentGame === "match") {
       return (
         <div>
           <LetterMatchGame setCurrentGame={setCurrentGame} />
-          {/* <Button
-            onClick={() => setCurrentGame(null)}
-            className="mt-6 bg-gray-100 hover:bg-gray-200 text-gray-700"
-          >
-            Back to Games
-          </Button> */}
+         
         </div>
       );
     }
@@ -1417,42 +1581,21 @@ function App() {
       return (
         <div>
           <LetterHuntGame setCurrentGame={setCurrentGame} />
-          {/* <Button
-            onClick={() => setCurrentGame(null)}
-            className="mt-6 bg-gray-100 hover:bg-gray-200 text-gray-700"
-          >
-            Back to Games
-          </Button> */}
+         
         </div>
       );
     }
 
     return (
-      <>
-        <ChooseGame
-          setCurrentGame={setCurrentGame}
-          setCurrentScreen={setCurrentScreen}
-          goBack={() => setCurrentScreen("home")}
-        />
-
-        {/* <div className="text-center">
-         <h2 className="text-2xl font-bold mb-6 text-green-500">Chjjjoose a Game</h2>
-        <div className="space-y-4">
-         <Button 
-             onClick={() => setCurrentGame('match')}
-             className="w-full py-4 bg-blue-400 text-white hover:bg-blue-500 rounded-xl"
-           >
-             🎯 Letter Match
-           </Button>
-           <Button 
-             onClick={() => setCurrentGame('hunt')}
-             className="w-full py-4 bg-purple-400 text-white hover:bg-purple-500 rounded-xl"
-           >
-             🎮 Letter Hunt
-           </Button>
-         </div>
-       </div>   */}
-      </>
+      
+      <ChooseGame
+      setCurrentGame={setCurrentGame}
+      setCurrentScreen={setCurrentScreen}
+      goBack={() => setCurrentScreen("home")}
+      selectedAvatar={selectedAvatar}           // ✅ now available
+      setIsAvatarUpdate={setIsAvatarUpdate}     // ✅ for avatar click
+    />
+     
     );
   };
 
@@ -1485,13 +1628,21 @@ function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case "selectCharacter":
-        return <SelectCharacter setCurrentScreen={handleScreenChange} />;
+        return <SelectCharacter
+        setCurrentScreen={handleScreenChange}
+        setSelectedAvatar={setSelectedAvatar}
+        selectedAvatar={selectedAvatar}
+        isAvatarUpdate={isAvatarUpdate}         // ✅ pass correctly
+      setIsAvatarUpdate={setIsAvatarUpdate}
+      />;
       case "home":
         return (
           <HomeScreen
-            setCurrentScreen={handleScreenChange}
-            goBack={() => setCurrentScreen("selectCharacter")}
-          />
+          setCurrentScreen={handleScreenChange}
+          goBack={() => setCurrentScreen("selectCharacter")}
+          selectedAvatar={selectedAvatar} // ✅ pass selected avatar here
+          setIsAvatarUpdate={setIsAvatarUpdate}
+        />
         );
       case "learn":
         return (
@@ -1502,13 +1653,14 @@ function App() {
         );
       case "games":
         return <GamesScreen setCurrentScreen={handleScreenChange} />;
-      case "chooseGame":
-        return (
-          <ChooseGame
-            setCurrentScreen={handleScreenChange}
-            goBack={() => setCurrentScreen(previousScreen)} // ← Pass goBack handler
-          />
-        );
+        case "chooseGame":
+          return (
+            <GamesScreen
+      setCurrentScreen={handleScreenChange}
+      selectedAvatar={selectedAvatar} // ✅ pass this!
+      setIsAvatarUpdate={setIsAvatarUpdate} // ✅ pass if avatar click needs it
+    />
+          );
       case "progress":
         return <ProgressScreen />;
       // default:
