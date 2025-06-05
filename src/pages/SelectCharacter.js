@@ -74,7 +74,7 @@ const SelectCharacter = () => {
     subtext: {
       color: '#ffffff',
       fontSize: windowWidth <= 480 ? '14px' : '18px',
-      marginBottom: '30px',
+      marginBottom: '12px',
     },
     selectedChar: {
       width: '80px',
