@@ -1,237 +1,132 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BackgroundImage from "../assets/images/choosGamebg.png";
-import BoardImage from "../assets/images/boardNewImage.png";
+import BoardImage from "../assets/images/boardImage.png";
 import LearnAlphabetIcon from "../assets/images/letterMatched.png";
 import AlphabetGamesIcon from "../assets/images/letterHunt.png";
 import BackIcon from "../assets/images/back.svg";
 
-class ChooseGame extends React.Component {
-  render() {
-    const { goBack, selectedAvatar, setCurrentGame } = this.props;
+const ChooseGame = ({ goBack, selectedAvatar, setCurrentGame, setIsAvatarUpdate, setCurrentScreen }) => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    return (
-      <div className="choose-game-container">
-         {selectedAvatar && (
-            <img
-              src={selectedAvatar}
-              alt="User Avatar"
-              className="user-avatar1"
-              
-              onClick={() => {
-                this.props.setIsAvatarUpdate(true);
-                this.props.setCurrentScreen("selectCharacter");
-              }}
-            />
-          )}
-        <button onClick={goBack} className="back-button" aria-label="Go back">
-          <img src={BackIcon} alt="Back" />
-        </button>
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-        <div className="board">
-          <h1 className="heading">Choosiiie a Game</h1>
-         
+  const smallScreen = windowWidth <= 425;
+  const isMobile = windowWidth <= 768;
+  const isTablet = windowWidth <= 1024;
 
-          <div className="game-options">
-            <div
-              onClick={() => setCurrentGame("match")}
-              className="game-card"
-              tabIndex={0}
-              role="button"
-              onKeyDown={(e) => e.key === "Enter" && setCurrentGame("match")}
-            >
-              <img src={LearnAlphabetIcon} alt="Learn Alphabet" />
-            </div>
+  const styles = {
+    body: {
+      margin: 0,
+      padding: 0,
+      boxSizing: "border-box",
+      fontFamily: "Arial, sans-serif",
+      backgroundImage: `url(${BackgroundImage})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      height: smallScreen? "auto" : "100vh",
+      width: "100vw",
+      overflow: "hidden",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "column",
+      position: "relative",
+      paddingTop: smallScreen ? "100px" : "0px",
+    },
+    board: {
+      backgroundImage: smallScreen ? "none" : `url(${BoardImage})`,
+      backgroundSize: "contain",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      width: isMobile ? "95%" : isTablet ? "90%" : "1000px",
+      height: isMobile ? "95%" : isTablet ? "85%" : "850px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      textAlign: "center",
+    },
+    heading: {
+      fontSize: isMobile ? "28px" : isTablet ? "28px" : "1.8rem",
+      color: "#66501E",
+      fontWeight: "600",
+    },
+    options: {
+      display: "flex",
+      justifyContent: "center",
+      flexWrap: "wrap",
+      gap: isMobile ? "10px" : "20px",
+    },
+    card: {
+      width: smallScreen ? "300px" : isMobile ? "220px" : isTablet ? "200px" : "260px",
+      height: isMobile ? "230px" : isTablet ? "180px" : "240px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      transition: "transform 0.3s ease",
+    },
+    iconImg: {
+      width: "100%",
+      height: "auto",
+    },
+    backArrow: {
+      position: "absolute",
+      top: "20px",
+      left: "20px",
+      fontSize: "1.8rem",
+      cursor: "pointer",
+      color: "#fff",
+    },
+  };
 
-            <div
-              onClick={() => setCurrentGame("hunt")}
-              className="game-card"
-              tabIndex={0}
-              role="button"
-              onKeyDown={(e) => e.key === "Enter" && setCurrentGame("hunt")}
-            >
-              <img src={AlphabetGamesIcon} alt="Alphabet Games" />
-            </div>
+  return (
+    <div style={styles.body}>
+      {selectedAvatar && (
+        <img
+          src={selectedAvatar}
+          alt="User Avatar"
+          className="user-avatar2"
+          onClick={() => {
+            setIsAvatarUpdate(true);
+            setCurrentScreen("selectCharacter");
+          }}
+        />
+      )}
+      <div onClick={goBack} style={styles.backArrow}>
+        <img src={BackIcon} alt="Back" />
+      </div>
+
+      <div style={styles.board}>
+        <div style={styles.heading}>Choose a game</div>
+        <div style={styles.options}>
+          <div
+            style={styles.card}
+            onClick={() => setCurrentGame("match")}
+            tabIndex={0}
+            role="button"
+            onKeyDown={(e) => e.key === "Enter" && setCurrentGame("match")}
+          >
+            <img src={LearnAlphabetIcon} alt="Match Letters" style={styles.iconImg} />
+          </div>
+          <div
+            style={styles.card}
+            onClick={() => setCurrentGame("hunt")}
+            tabIndex={0}
+            role="button"
+            onKeyDown={(e) => e.key === "Enter" && setCurrentGame("hunt")}
+          >
+            <img src={AlphabetGamesIcon} alt="Letter Hunt" style={styles.iconImg} />
           </div>
         </div>
-
-        <style jsx>{`
-          .choose-game-container {
-            min-height: 100vh;
-            width: 100%;
-            background-image: url(${BackgroundImage});
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: top center;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-          }
-
-          .board {
-            background-image: url(${BoardImage});
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            width: 100%;
-            max-width: 1200px;
-            height: 988px;
-            position: relative;
-            margin-top: 22px;
-          }
-          @media (max-width: 1024px) {
-            .board {
-              height: 891px;
-            }
-          }
-
-          .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 10;
-          }
-
-          .back-button img {
-            width: 32px;
-            height: 32px;
-          }
-
-          .heading {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #66501e;
-            text-align: center;
-            margin-bottom: 2rem;
-            position: absolute;
-            top: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-          }
-
-          .game-options {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            position: absolute;
-            top: 330px;
-            left: 50%;
-            transform: translateX(-50%);
-          }
-
-          .game-card {
-            width: 300px;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            outline: none;
-          }
-
-          .game-card img {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-            pointer-events: none;
-          }
-
-          @media (max-width: 768px) {
-            .heading {
-              font-size: 2rem;
-              top: 160px;
-            }
-            .board {
-              height: 801px;
-            }
-
-            .game-card {
-              width: 270px;
-            }
-            .game-options {
-              gap: 0rem;
-              top: 260px;
-            }
-          }
-
-          @media (max-width: 480px) {
-            .heading {
-              font-size: 1.5rem;
-            }
-
-            .game-card {
-              width: 200px;
-              height: 200px;
-            }
-          }
-          @media (max-width: 425px) {
-            .choose-game-container {
-              background-size: cover;
-            }
-            .board {
-              max-width: 380px;
-              height: 400px !important;
-              margin-top: 370px;
-            }
-            .heading {
-              top: 67px;
-              left: 48%;
-              font-size: 25px;
-              font-weight: 400;
-              color: #66501e;
-            }
-            .game-card {
-              width: 156px;
-              height: 120px;
-            }
-            .game-options {
-              gap: 0rem;
-              top: 130px;
-            }
-          }
-          @media (max-width: 320px) {
-            .choose-game-container {
-              min-height: 100vh;
-              width: 100%;
-              background-image: url(${BackgroundImage});
-              background-size: cover;
-              background-repeat: no-repeat;
-              background-position: center;
-              position: relative;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-            }
-            .board {
-              margin-top: 450px;
-              max-width: 310px;
-              height: 300px !important;
-            }
-            .heading {
-              top: 54px;
-              left: 49%;
-              font-size: 20px;
-              font-weight: 400;
-              color: #66501e;
-            }
-            .game-card {
-              width: 118px;
-              height: 100px;
-            }
-            .game-options {
-              gap: 0rem;
-              top: 91px;
-            }
-          }
-        `}</style>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default ChooseGame;

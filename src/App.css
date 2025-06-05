@@ -135,7 +135,7 @@ body,
   background-color: #ffd166;
   border: 10px solid #b59448;
   border-radius: 20px;
-  height: 700px;
+  height: 529px;
   width: 1300px;
   display: flex;
   flex-direction: column;
@@ -161,17 +161,17 @@ body,
 
 .arrow-next {
   position: absolute;
-  bottom: 35px;
-  right: 390px;
-  width: 80px;
+  bottom: 32px;
+  right: 280px;
+  width: 60px;
   cursor: pointer;
 }
 
 .arrow-back {
   position: absolute;
   bottom: 24px;
-  left: 337px;
-  width: 80px;
+  left: 367px;
+  width: 60px;
   cursor: pointer;
 }
 
@@ -203,7 +203,7 @@ body,
 }
 
 .letter-box {
-  width: 430px;
+  width: 400px;
   height: 310px;
 }
 
@@ -242,13 +242,22 @@ body,
 
 
 @media (max-width: 768px) {
+
   .board {
     height: 802px !important;
   }
-  .boardYellow {
-    width: 100%;
-    max-width: 600px;
-  }
+ .boardYellow {
+    background-color: #ffd166;
+    border: 10px solid #b59448;
+    border-radius: 20px;
+    height: 439px !important;
+    width: 700px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    position: relative;
+}
   .letter-box {
     width: 200px;
     height: 123px;
@@ -287,6 +296,15 @@ body,
 }
 
 @media (max-width: 425px) {
+  .user-avatar2 {
+    width: 70px !important;
+    height: 70px !important;
+    border-radius: 50% !important;
+    position: absolute !important;
+    top: 5px !important;
+    right: 3px !important;
+    cursor: pointer !important;
+}
   .arrow-back-top {
     top: 5px;
     left: 10px;
@@ -331,23 +349,32 @@ body,
     width: 30px;
   }
   .letter-box {
-    width: 300px;
-    height: 200px;
+    width: 230px;
+    height: 150px;
     margin: auto;
     padding-top: 31px;
   }
   .animal-box {
     width: 300px;
-    height: 130px;
+    height: 231px;
     margin: auto;
   }
   .boardYellow {
     width: 100%;
-    height: 570px;
+    height: 470px;
   }
 }
 
 @media (max-width: 375px) {
+  .user-avatar2 {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    right: 3px;
+    cursor: pointer;
+}
   .avatarGridWrapper {
     background-color: #ffe09c;
     padding: 20px;
@@ -401,11 +428,20 @@ body,
   }
   .boardYellow {
     width: 100%;
-    height: 570px;
+    height: 470px;
   }
 }
 
 @media (max-width: 320px) {
+  .user-avatar2 {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    right: 3px;
+    cursor: pointer;
+}
   .board {
     margin-top: 450px;
     max-width: 310px;
@@ -441,8 +477,7 @@ body,
     -webkit-text-stroke: 1.5px black;
   }
   .boardYellow {
-    width: 100%;
-    height: 570px;
+    width: 300px !important;
   }
   .footer-number {
     bottom: 16px;
@@ -515,6 +550,9 @@ body,
 @media (max-width: 320px) {
   .animal-box{
     font-size: 46px;
+    width: 300px;
+    height: 200px;
+    margin: auto;
   }
   .avatarGridWrapper {
     max-height: 51vh;

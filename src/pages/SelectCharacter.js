@@ -21,14 +21,45 @@ import Avatar17 from "../assets/images/avatar17.svg";
 import Avatar18 from "../assets/images/avatar18.svg";
 import "../App.css";
 
-const SelectCharacter = () => {
+const SelectCharacter = ({
+  setCurrentScreen,
+  selectedAvatar,
+  setSelectedAvatar,
+  isAvatarUpdate,
+  setIsAvatarUpdate,
+}) => {
   const [selected, setSelected] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    if (!selectedAvatar) {
+      setSelectedAvatar(avatars[0]);
+    }
+  }, [selectedAvatar, setSelectedAvatar]);
+
+  const handleSubmit = () => {
+    setCurrentScreen("home");
+    setIsAvatarUpdate(false);
+  };
 
   const avatars = [
-    Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6,
-    Avatar7, Avatar8, Avatar9, Avatar10, Avatar11, Avatar12,
-    Avatar13, Avatar14, Avatar15, Avatar16, Avatar17, Avatar18,
+    Avatar1,
+    Avatar2,
+    Avatar3,
+    Avatar4,
+    Avatar5,
+    Avatar6,
+    Avatar7,
+    Avatar8,
+    Avatar9,
+    Avatar10,
+    Avatar11,
+    Avatar12,
+    Avatar13,
+    Avatar14,
+    Avatar15,
+    Avatar16,
+    Avatar17,
+    Avatar18,
   ];
 
   useEffect(() => {
@@ -56,89 +87,91 @@ const SelectCharacter = () => {
   const styles = {
     container: {
       fontFamily: "'Arial Rounded MT Bold', sans-serif",
-      backgroundColor: '#6AA9FF',
-      minHeight: '100vh',
-      padding: '10px 20px',
-      boxSizing: 'border-box',
+      backgroundColor: "#6AA9FF",
+      minHeight: "100vh",
+      padding: "10px 20px",
+      boxSizing: "border-box",
     },
     headerContainer: {
-      maxWidth: '700px',
-      textAlign: 'left',
+      maxWidth: "700px",
+      textAlign: "left",
     },
     header: {
-      color: '#FFB800',
-      fontWeight: 'bold',
-      fontSize: windowWidth <= 480 ? '28px' : '38px',
-      marginBottom: '10px',
+      color: "#FFB800",
+      fontWeight: "bold",
+      fontSize: windowWidth <= 480 ? "28px" : "38px",
+      marginBottom: "10px",
     },
     subtext: {
-      color: '#ffffff',
-      fontSize: windowWidth <= 480 ? '14px' : '18px',
-      marginBottom: '12px',
+      color: "#ffffff",
+      fontSize: windowWidth <= 480 ? "14px" : "18px",
+      marginBottom: "12px",
     },
     selectedChar: {
-      width: '80px',
-      height: '80px',
-      borderRadius: '50%',
-      backgroundColor: '#fff',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: '0 auto 20px',
-      overflow: 'hidden',
+      width: "80px",
+      height: "80px",
+      borderRadius: "50%",
+      backgroundColor: "#fff",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      margin: "0 auto 20px",
+      overflow: "hidden",
     },
     selectedImg: {
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
     },
     card: {
-      backgroundColor: '#FFE29D',
-      borderRadius: '15px',
-      padding: windowWidth <= 768 ? '20px 15px' : '30px 20px', // Responsive padding
+      backgroundColor: "#FFE29D",
+      borderRadius: "15px",
+      padding: windowWidth <= 768 ? "20px 15px" : "28px 20px", // Responsive padding
       width: getCardWidth(),
-      margin: '0 auto',
-      boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+      margin: "0 auto",
+      boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
     },
     grid: {
-      display: 'grid',
+      display: "grid",
       gridTemplateColumns: `repeat(${getGridColumns()}, 1fr)`,
-      gap: '10px',
-      width: '100%',
-      justifyItems: 'center',
-      alignItems: 'center',
-      marginBottom: '20px',
+      gap: "10px",
+      width: "100%",
+      justifyItems: "center",
+      alignItems: "center",
+      marginBottom: "20px",
     },
     avatarWrapper: (index) => ({
-      width: windowWidth <= 768 ? '60px' : '75px', // Responsive avatar size
-      height: windowWidth <= 768 ? '60px' : '75px',
-      borderRadius: '50%',
-      backgroundColor: '#fff',
-      overflow: 'hidden',
-      cursor: 'pointer',
-      border: selected === index ? '3px solid #0056ff' : '2px solid transparent',
-      boxShadow: selected === index ? '0 0 8px rgba(0, 86, 255, 0.5)' : 'none',
-      transition: 'all 0.3s ease',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+      width: windowWidth <= 320 ? "60px" : windowWidth <= 768 ? "90px" : "95px",
+      height:
+        windowWidth <= 320 ? "60px" : windowWidth <= 768 ? "90px" : "95px",
+      borderRadius: "50%",
+      backgroundColor: "#fff",
+      overflow: "hidden",
+      cursor: "pointer",
+      border:
+        selected === index ? "3px solid #0056ff" : "2px solid transparent",
+      boxShadow: selected === index ? "0 0 8px rgba(0, 86, 255, 0.5)" : "none",
+      transition: "all 0.3s ease",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     }),
     avatarImg: {
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
     },
     button: {
-      backgroundColor: '#388bff',
-      color: '#fff',
-      border: 'none',
-      padding: '12px 20px',
-      borderRadius: '8px',
-      fontSize: '16px',
-      cursor: 'pointer',
+      backgroundColor: "#388bff",
+      color: "#fff",
+      border: "none",
+      padding: "12px 20px",
+      borderRadius: "8px",
+      fontSize: "16px",
+      cursor: "pointer",
     },
   };
 
@@ -152,7 +185,11 @@ const SelectCharacter = () => {
       </div>
 
       <div style={styles.selectedChar}>
-        <img src={avatars[selected]} alt="Selected Avatar" style={styles.selectedImg} />
+        <img
+          src={avatars[selected]}
+          alt="Selected Avatar"
+          style={styles.selectedImg}
+        />
       </div>
 
       <div style={styles.card}>
@@ -163,11 +200,21 @@ const SelectCharacter = () => {
               style={styles.avatarWrapper(index)}
               onClick={() => handleSelect(index)}
             >
-              <img src={avatar} alt={`Avatar ${index + 1}`} style={styles.avatarImg} />
+              <img
+                src={avatar}
+                alt={`Avatar ${index + 1}`}
+                style={styles.avatarImg}
+              />
             </div>
           ))}
         </div>
-        <button style={styles.button}>Get Started</button>
+        <button
+          style={styles.button}
+          disabled={!selectedAvatar}
+          onClick={handleSubmit}
+        >
+          {isAvatarUpdate ? "Update" : "Get Started"}
+        </button>
       </div>
     </div>
   );
