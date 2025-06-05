@@ -78,7 +78,7 @@ const SelectCharacter = ({
   const getCardWidth = () => {
     if (windowWidth <= 480) return "100%";
     if (windowWidth <= 768) return "95%";
-    if (windowWidth <= 1024) return "90%"; // Changed from 95% to 90%
+    if (windowWidth <= 1024) return "1080px"; // Changed from 95% to 90%
     return "1200px";
   };
 
@@ -100,12 +100,12 @@ const SelectCharacter = ({
       color: "#FFB800",
       fontWeight: "bold",
       fontSize: windowWidth <= 480 ? "28px" : "38px",
-      marginBottom: "10px",
+     
     },
     subtext: {
       color: "#ffffff",
       fontSize: windowWidth <= 480 ? "14px" : "18px",
-      marginBottom: "12px",
+     
     },
     selectedChar: {
       width: "80px",
@@ -115,7 +115,7 @@ const SelectCharacter = ({
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      margin: "0 auto 20px",
+      margin: "0 auto 10px",
       overflow: "hidden",
     },
     selectedImg: {
@@ -126,7 +126,7 @@ const SelectCharacter = ({
     card: {
       backgroundColor: "#FFE29D",
       borderRadius: "15px",
-      padding: windowWidth <= 768 ? "20px 15px" : "28px 20px", // Responsive padding
+      padding: windowWidth <= 768 ? "20px 15px" : "16px 20px", // Responsive padding
       width: getCardWidth(),
       margin: "0 auto",
       boxShadow: "0 4px 8px rgba(0,0,0,0.2)",

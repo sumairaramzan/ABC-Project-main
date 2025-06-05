@@ -923,8 +923,8 @@ function App() {
                 src={soundEnabled ? cartoonIcon : cartoonIconOff}
                 alt={soundEnabled ? "Cartoon Sound On" : "Cartoon Sound Off"}
                 style={{
-                  width: 64,
-                  height: 64,
+                  width: 60,
+                  height: 60,
                   objectFit: "contain",
                   transition: "opacity 0.3s",
                 }}
