@@ -135,8 +135,8 @@ body,
   background-color: #ffd166;
   border: 10px solid #b59448;
   border-radius: 20px;
-  height: 740px;
-  width: 1400px;
+  height: 700px;
+  width: 1300px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -216,6 +216,7 @@ body,
 .image-fit {
   width: 100%;
   object-fit: contain;
+  height: 100%;
 }
 
 /* Responsive Media Queries */
@@ -224,6 +225,20 @@ body,
     height: 800px;
   }
 }
+
+/* in your CSS or styled-component */
+.card {
+  width: 95%;
+  padding: 30px 20px;
+}
+
+@media (max-width: 1024px) {
+  .card {
+    width: 90%;
+    padding: 20px 15px;
+  }
+}
+
 
 
 @media (max-width: 768px) {

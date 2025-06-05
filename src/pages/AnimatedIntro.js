@@ -109,7 +109,7 @@ const AnimatedIntro = ({ onStart }) => {
             exit={{ x: "-100vw", opacity: 0 }}
             transition={{ type: "tween", duration: 0.8 }}
           >
-            <div className="flex flex-col justify-center items-start py-8 md:py-0 px-2 md:px-6">
+            <div className=" py-8 md:py-0 px-2 md:px-6">
               <div
                 className="text-black mb-4 md:mb-6"
                 style={{
