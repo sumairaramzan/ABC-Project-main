@@ -103,7 +103,7 @@ const AnimatedIntro = ({ onStart }) => {
         {/* Character Screen */}
         {steps[step] === "characterScreen" && (
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 h-full w-full px-4 md:px-10 absolute top-0 left-0"
+            className="grid grid-cols-1 md:grid-cols-2 w-full px-4 md:px-10 absolute top-0 left-0"
             initial={{ x: "100vw", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "-100vw", opacity: 0 }}
@@ -117,6 +117,7 @@ const AnimatedIntro = ({ onStart }) => {
                   lineHeight: "1.1",
                   fontWeight: "500",
                   fontFamily: "sans-serif",
+                  marginTop:"60px",
                 }}
               >
                 <div>Where Letters</div>

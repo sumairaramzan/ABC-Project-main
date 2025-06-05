@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import CustomErrorBoundary from "./CustomErrorBoundary";
 import "./App.css";
-import { driver } from 'driver.js';
-import 'driver.js/dist/driver.css';
-import Joyride from 'react-joyride';
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+import Joyride from "react-joyride";
 import { Card } from "./components/ui/card";
 import { Button } from "./components/ui/button";
 import { motion } from "framer-motion";
@@ -62,7 +62,7 @@ import lAnimal from "./assets/animal_icons/l.svg";
 import mAnimal from "./assets/animal_icons/m.svg";
 import nAnimal from "./assets/animal_icons/n.svg";
 import oAnimal from "./assets/animal_icons/orange.svg";
-import oopsImage from "./assets/images/oopsImage.png"
+import oopsImage from "./assets/images/oopsImage.png";
 import pAnimal from "./assets/animal_icons/p.svg";
 import qAnimal from "./assets/images/queen.svg";
 import rAnimal from "./assets/animal_icons/r.svg";
@@ -183,12 +183,16 @@ const DIFFICULTY_LEVELS = {
 };
 
 const SOUNDS = {
-  celebration: new Audio("https://assets.mixkit.co/active_storage/sfx/2153/2153-preview.mp3"),
-  match: new Audio("https://assets.mixkit.co/active_storage/sfx/1111/1111-preview.mp3"),
-  wrongAttempt: new Audio("https://assets.mixkit.co/active_storage/sfx/1382/1382-preview.mp3"), // Example wrong sound
+  celebration: new Audio(
+    "https://assets.mixkit.co/active_storage/sfx/2153/2153-preview.mp3"
+  ),
+  match: new Audio(
+    "https://assets.mixkit.co/active_storage/sfx/1111/1111-preview.mp3"
+  ),
+  wrongAttempt: new Audio(
+    "https://assets.mixkit.co/active_storage/sfx/1382/1382-preview.mp3"
+  ), // Example wrong sound
 };
-
-
 
 // Alphabet data
 const alphabetData = [
@@ -380,9 +384,7 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState("selectCharacter");
   const [previousScreen, setPreviousScreen] = useState(null);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
-  const [isAvatarUpdate, setIsAvatarUpdate] = useState(false); 
-
-  
+  const [isAvatarUpdate, setIsAvatarUpdate] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -839,124 +841,193 @@ function App() {
       }
     };
 
-    return (
-     <div
-  className="game-wrapper"
-  style={{ backgroundImage: `url(${bgImage})` }}
->
-  <div className="game-container">
-    {/* Header */}
-    <div className="game-header">
-      <button onClick={() => setCurrentGame(null)}>
-        <img src={arrowLeft} alt="arrow" style={{ width: 28, height: 28 }} />
-      </button>
-      <h2 className="game-title">Letter Match</h2>
-      <button
-        onClick={() => {
-          if (!isSpeaking) {
-            setSoundEnabled(!soundEnabled);
-            if (!soundEnabled) playSound(currentLetter.char, currentLetter.name);
-          }
-        }}
-      >
-        <img
-          src={soundEnabled ? cartoonIcon : cartoonIconOff}
-          alt={soundEnabled ? "Cartoon Sound On" : "Cartoon Sound Off"}
-          style={{ width: 64, height: 64, objectFit: "contain", transition: "opacity 0.3s" }}
-        />
-      </button>
-    </div>
-
-    {/* Grid */}
-    <div className="card-grid-wrapper">
-      <div className="card-grid-inner">
-     <div className="card-grid">
-  {cards.map((card) => {
-    const isFlipped = flippedCards.includes(card.id) || matchedPairs.includes(card.value);
-    const backgroundUrl = isFlipped ? back : cardFront;
-
-    return (
-      <motion.div
-      key={card.id}
-      className="card"
-      style={{ backgroundImage: `url(${backgroundUrl})` }}
-      onClick={() => handleCardClick(card)}
-      whileHover={{ scale: 1.05 }}
-      transition={{ type: "spring", stiffness: 300 }}
-    >
-      {isFlipped &&
-        (card.type === "picture" || card.type === "letter" ? (
-          <img
-            src={card.content}
-            alt={card.name}
-            className="card-content"
-            draggable={false}
-            style={card.type === "letter" ? { width: "120px", height: "auto" } : {}}
-          />
-        ) : (
-          <span
-            className="card-text"
-            style={card.type === "letter" ? { fontSize: "100px" } : {}}
-          >
-            {card.content}
-          </span>
-        ))}
-    </motion.div>
+    const steps = [
+      {
+        element: ".back-arrow",
+        popover: {
+          title: "Back Button",
+          description: "Click here to return to the main menu.",
+        },
+      
+        stageRadius: 50,
+      },
+      {
+        element: ".game-title",
+        popover: {
+          title: "Game Title",
+          description: "This is the name of your current game.",
+        },
+       
+        stageRadius: 80,
+      },
+      {
+        element: ".game-board-wrapper",
+        popover: {
+          title: "Game Board",
+          description: "Match the correct cards here.",
+        },
+      
+        stageRadius: 120,
+      },
+    ];
+    useEffect(() => {
+      const tour = driver({
+        showButtons: true,
+        allowClose: true,
+        overlayOpacity: 0.75,
+        nextBtnText: "Next",
+        prevBtnText: "Back",
+        doneBtnText: "Done",
+        steps,
+        stageRadius: 100,
+        onHighlightStarted: () => {
+          window.speechSynthesis.cancel();
+        },
+        onDestroyed: () => {
+          // Optional: Add any post-tour logic here
+        },
+      });
     
-    );
-  })}
-</div>
+      setTimeout(() => {
+        tour.drive();
+      }, 500);
+    }, []);
+    
 
+    return (
+      <div
+        className="game-wrapper"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      >
+        <div className="game-container">
+          {/* Header */}
+          <div className="game-header">
+            <button onClick={() => setCurrentGame(null)}>
+              <img
+                src={arrowLeft}
+                alt="arrow"
+                style={{ width: 28, height: 28 }}
+              />
+            </button>
+            <h2 className="game-title">Letter Match</h2>
+            <button
+              onClick={() => {
+                if (!isSpeaking) {
+                  setSoundEnabled(!soundEnabled);
+                  if (!soundEnabled)
+                    playSound(currentLetter.char, currentLetter.name);
+                }
+              }}
+            >
+              <img
+                src={soundEnabled ? cartoonIcon : cartoonIconOff}
+                alt={soundEnabled ? "Cartoon Sound On" : "Cartoon Sound Off"}
+                style={{
+                  width: 64,
+                  height: 64,
+                  objectFit: "contain",
+                  transition: "opacity 0.3s",
+                }}
+              />
+            </button>
+          </div>
 
-      </div>
-    </div>
+          {/* Grid */}
+          <div className="card-grid-wrapper">
+            <div className="card-grid-inner">
+              <div className="card-grid card-grid-wrapper">
+                {cards.map((card) => {
+                  const isFlipped =
+                    flippedCards.includes(card.id) ||
+                    matchedPairs.includes(card.value);
+                  const backgroundUrl = isFlipped ? back : cardFront;
 
-    {/* Progress */}
-    <div className="progress-section">
-      <div className="progress-bar-container">
-        <div className="progress-bar">
-          <div className="progress-fill" style={{ width: `${score}%` }} />
+                  return (
+                    <motion.div
+                      key={card.id}
+                      className="card"
+                      style={{ backgroundImage: `url(${backgroundUrl})` }}
+                      onClick={() => handleCardClick(card)}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      {isFlipped &&
+                        (card.type === "picture" || card.type === "letter" ? (
+                          <img
+                            src={card.content}
+                            alt={card.name}
+                            className="card-content"
+                            draggable={false}
+                            style={
+                              card.type === "letter"
+                                ? { width: "120px", height: "auto" }
+                                : {}
+                            }
+                          />
+                        ) : (
+                          <span
+                            className="card-text"
+                            style={
+                              card.type === "letter"
+                                ? { fontSize: "100px" }
+                                : {}
+                            }
+                          >
+                            {card.content}
+                          </span>
+                        ))}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Progress */}
+          <div className="progress-section">
+            <div className="progress-bar-container">
+              <div className="progress-bar">
+                <div className="progress-fill" style={{ width: `${score}%` }} />
+              </div>
+              <span className="progress-label">{score}%</span>
+            </div>
+            <div className="moves">Moves: {moves}</div>
+          </div>
+
+          {/* Celebration Dialog */}
+          {showCelebration && (
+            <CelebrationDialog
+              onRestart={() => {
+                setShowCelebration(false);
+                setCards([]);
+                setFlippedCards([]);
+                setMatchedPairs([]);
+                setMoves(0);
+                setScore(0);
+                const gameData = alphabetData.slice(0, 6);
+                const cardPairs = gameData.flatMap((item) => [
+                  {
+                    id: `letter_${item.letter}`,
+                    type: "letter",
+                    value: item.letter,
+                    content: item.letter,
+                    name: item.name,
+                  },
+                  {
+                    id: `picture_${item.animal}`,
+                    type: "picture",
+                    value: item.letter,
+                    content: item.animal,
+                    name: item.name,
+                  },
+                ]);
+                setCards([...cardPairs].sort(() => Math.random() - 0.5));
+              }}
+              onHome={() => setCurrentScreen("home")}
+            />
+          )}
         </div>
-        <span className="progress-label">{score}%</span>
       </div>
-      <div className="moves">Moves: {moves}</div>
-    </div>
-
-    {/* Celebration Dialog */}
-    {showCelebration && (
-      <CelebrationDialog
-        onRestart={() => {
-          setShowCelebration(false);
-          setCards([]);
-          setFlippedCards([]);
-          setMatchedPairs([]);
-          setMoves(0);
-          setScore(0);
-          const gameData = alphabetData.slice(0, 6);
-          const cardPairs = gameData.flatMap((item) => [
-            {
-              id: `letter_${item.letter}`,
-              type: "letter",
-              value: item.letter,
-              content: item.letter,
-              name: item.name,
-            },
-            {
-              id: `picture_${item.animal}`,
-              type: "picture",
-              value: item.letter,
-              content: item.animal,
-              name: item.name,
-            },
-          ]);
-          setCards([...cardPairs].sort(() => Math.random() - 0.5));
-        }}
-        onHome={() => setCurrentScreen("home")}
-      />
-    )}
-  </div>
-</div>
-
     );
   };
   // LetterHuntGame Component
@@ -974,7 +1045,6 @@ function App() {
     const [totalQuestions] = useState(10);
     const [gameReady, setGameReady] = useState(false);
 
-
     // Helper function to calculate rating
     const getRating = (score, total) => {
       const percentage = (score / total) * 100;
@@ -983,8 +1053,6 @@ function App() {
       if (percentage >= 50) return { text: "Fair!", color: "#FFC107" };
       return { text: "Try Again", color: "#F44336" };
     };
-
-
 
     const generatePosition = (usedPositions, threshold = 12) => {
       let position;
@@ -1006,7 +1074,7 @@ function App() {
         ) &&
         attempts < 100
       );
-    
+
       usedPositions.push({ top: position.top, left: position.left });
       return {
         top: `${position.top}%`,
@@ -1014,13 +1082,11 @@ function App() {
         rotation: position.rotation,
       };
     };
-    
-    
 
     const createGameObjects = (targetLetter) => {
       const usedPositions = [];
       const targetObj = alphabetData.find((item) => item.char === targetLetter);
-    
+
       return [
         // Target letters (3)
         ...Array(3)
@@ -1033,7 +1099,7 @@ function App() {
             color: "text-purple-600",
             ...generatePosition(usedPositions),
           })),
-    
+
         // Decoy letters (12)
         ...Array(12)
           .fill()
@@ -1056,40 +1122,38 @@ function App() {
           }),
       ].sort(() => Math.random() - 0.5);
     };
-    
 
+    useEffect(() => {
+      let timer;
+      if (isPlaying && gameReady && time > 0) {
+        timer = setInterval(() => {
+          setTime((prevTime) => {
+            if (prevTime <= 1) {
+              clearInterval(timer);
+              endGame();
+              return 0;
+            } else {
+              // Play ticking sound if near end
+              if (prevTime <= 6 && soundEnabled) {
+                const tickContext = new (window.AudioContext ||
+                  window.webkitAudioContext)();
+                const osc = tickContext.createOscillator();
+                const gain = tickContext.createGain();
+                osc.connect(gain);
+                gain.connect(tickContext.destination);
+                osc.frequency.value = 440;
+                gain.gain.value = 0.1;
+                osc.start();
+                setTimeout(() => osc.stop(), 100);
+              }
+              return prevTime - 1;
+            }
+          });
+        }, 1000);
+      }
 
-useEffect(() => {
-  let timer;
-  if (isPlaying && gameReady && time > 0) {
-    timer = setInterval(() => {
-      setTime((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          endGame();
-          return 0;
-        } else {
-          // Play ticking sound if near end
-          if (prevTime <= 6 && soundEnabled) {
-            const tickContext = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = tickContext.createOscillator();
-            const gain = tickContext.createGain();
-            osc.connect(gain);
-            gain.connect(tickContext.destination);
-            osc.frequency.value = 440;
-            gain.gain.value = 0.1;
-            osc.start();
-            setTimeout(() => osc.stop(), 100);
-          }
-          return prevTime - 1;
-        }
-      });
-    }, 1000);
-  }
-
-  return () => clearInterval(timer);
-}, [isPlaying, gameReady, time, soundEnabled]);
-
+      return () => clearInterval(timer);
+    }, [isPlaying, gameReady, time, soundEnabled]);
 
     const endGame = async () => {
       if (soundEnabled) {
@@ -1138,10 +1202,11 @@ useEffect(() => {
 
     const handleClick = async (obj) => {
       if (!isPlaying) return;
-    
+
       // ✅ Correct letter
       if (obj.type === "CapitalLetter" && obj.char === currentLetter) {
-        const context = new (window.AudioContext || window.webkitAudioContext)();
+        const context = new (window.AudioContext ||
+          window.webkitAudioContext)();
         const oscillator = context.createOscillator();
         const gainNode = context.createGain();
         oscillator.connect(gainNode);
@@ -1150,11 +1215,11 @@ useEffect(() => {
         gainNode.gain.value = 0.1;
         oscillator.start();
         setTimeout(() => oscillator.stop(), 100);
-    
+
         if (score < totalQuestions) {
           setScore((prevScore) => prevScore + 1);
         }
-    
+
         if (soundEnabled) {
           try {
             const messages = [
@@ -1173,18 +1238,18 @@ useEffect(() => {
             console.error("Speech synthesis error:", error);
           }
         }
-    
-        const newLetter = alphabetData[Math.floor(Math.random() * alphabetData.length)].char;
+
+        const newLetter =
+          alphabetData[Math.floor(Math.random() * alphabetData.length)].char;
         setCurrentLetter(newLetter);
         setGameObjects(createGameObjects(newLetter));
-    
-      } 
+      }
       // ❌ Wrong letter
       else if (obj.type === "CapitalLetter" && obj.char !== currentLetter) {
         if (soundEnabled && SOUNDS.wrongAttempt) {
           SOUNDS.wrongAttempt.play();
         }
-    
+
         try {
           const utterance = await initSpeech("Oops! Wrong letter!", {
             pitch: 1.0,
@@ -1197,382 +1262,440 @@ useEffect(() => {
         }
       }
     };
-    
-    
 
-   const CelebrationDialog = ({
-  onRestart,
-  onHome,
-  score,
-  total,
-  onClose,
-}) => {
-  const rating = getRating(score, total);
+    const CelebrationDialog = ({
+      onRestart,
+      onHome,
+      score,
+      total,
+      onClose,
+    }) => {
+      const rating = getRating(score, total);
 
-  const isLowScore = score < 5;
+      const isLowScore = score < 5;
 
-  const imageSrc = isLowScore ? oopsImage : congratulations;
-  const headingText = isLowScore ? "Oops!" : "Congratulations!";
-  const headingColor = isLowScore ? "#E84640" : "#1CA34E";
-  const ratingText = isLowScore ? "Not Good" : rating.text;
-  const ratingColor = isLowScore ? "#2E2E2E" : rating.color;
+      const imageSrc = isLowScore ? oopsImage : congratulations;
+      const headingText = isLowScore ? "Oops!" : "Congratulations!";
+      const headingColor = isLowScore ? "#E84640" : "#1CA34E";
+      const ratingText = isLowScore ? "Not Good" : rating.text;
+      const ratingColor = isLowScore ? "#2E2E2E" : rating.color;
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="fixed inset-0 flex items-center justify-center bg-black/30 z-50"
-    >
-      <motion.div
-        initial={{ scale: 0.5, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", duration: 0.5 }}
-        className="relative bg-white rounded-lg p-6 max-w-xs w-full mx-4 text-center shadow-md"
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors"
+      return (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 flex items-center justify-center bg-black/30 z-50"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", duration: 0.5 }}
+            className="relative bg-white rounded-lg p-6 max-w-xs w-full mx-4 text-center shadow-md"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+            <button
+              onClick={onClose}
+              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
 
-        <div className="flex justify-center mb-3">
-          <img src={imageSrc} alt="Result" />
-        </div>
+            <div className="flex justify-center mb-3">
+              <img src={imageSrc} alt="Result" />
+            </div>
 
-        <h2
-          className="text-2xl font-bold mb-3"
-          style={{
-            color: headingColor,
-            fontSize: "14px",
-            fontWeight: "500",
-          }}
-        >
-          {headingText}
-        </h2>
+            <h2
+              className="text-2xl font-bold mb-3"
+              style={{
+                color: headingColor,
+                fontSize: "14px",
+                fontWeight: "500",
+              }}
+            >
+              {headingText}
+            </h2>
 
-        <div className="space-y-1 mb-5">
-          <p
-            style={{
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#2E2E2E",
-            }}
-          >
-            Your Score: {Math.min(score, total)}/{total}. Rating:
-            <span style={{ color: ratingColor, marginLeft: "4px" }}>
-              {ratingText}
-            </span>
-          </p>
-        </div>
+            <div className="space-y-1 mb-5">
+              <p
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "#2E2E2E",
+                }}
+              >
+                Your Score: {Math.min(score, total)}/{total}. Rating:
+                <span style={{ color: ratingColor, marginLeft: "4px" }}>
+                  {ratingText}
+                </span>
+              </p>
+            </div>
 
-        <div className="flex space-x-3">
-          <button
-            onClick={onHome}
-            className="flex-1 py-2 px-4 rounded-md transition-colors text-sm border"
-            style={{
-              backgroundColor: "transparent",
-              borderColor: "#D0D5DD",
-              color: "#344054",
-              fontSize: "12px",
-              fontWeight: "600",
-            }}
-          >
-            Back to Home
-          </button>
-          <button
-            onClick={onRestart}
-            className="flex-1 py-2 px-4 rounded-md transition-colors text-sm"
-            style={{
-              backgroundColor: "#E8BE5D",
-              color: "#344054",
-              fontSize: "13px",
-              fontWeight: "600",
-            }}
-          >
-            Play again
-          </button>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-};
-const steps = [
-  {
-    element: '.back-arrow',
-    popover: {
-      title: 'Back Button',
-      description: 'Click here to go back to the main menu.',
-    },
-    stageRadius: 50,
-  },
-  {
-    element: '.game-title',
-    popover: {
-      title: 'Game Title',
-      description: 'This is the name of your current game.',
-    },
-    stageRadius: 80,
-  },
-  {
-    element: '.score',
-    popover: {
-      title: 'Your Score',
-      description: 'Keep track of how many correct answers you’ve gotten.',
-    },
-    stageRadius: 60,
-  },
-  {
-    element: '.time',
-    popover: {
-      title: 'Timer',
-      description: 'You have limited time. Watch it closely!',
-    },
-    stageRadius: 60,
-  },
-  {
-    element: '.target-letter',
-    popover: {
-      title: 'Target Letter',
-      description: 'This is the letter you need to find.',
-    },
-    stageRadius: 60,
-  },
-  {
-    element: '.game-board-wrapper',
-    popover: {
-      title: 'Game Board',
-      description: 'Tap the correct letter here!',
-    },
-    stageRadius: 150,
-  },
-  {
-    element: '.celebration',
-    popover: {
-      title: 'Game Over',
-      description: 'You’ve finished! Restart or go home.',
-      position: 'center',
-    },
-    stageRadius: 80,
-  },
-];
+            <div className="flex space-x-3">
+              <button
+                onClick={onHome}
+                className="flex-1 py-2 px-4 rounded-md transition-colors text-sm border"
+                style={{
+                  backgroundColor: "transparent",
+                  borderColor: "#D0D5DD",
+                  color: "#344054",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                }}
+              >
+                Back to Home
+              </button>
+              <button
+                onClick={onRestart}
+                className="flex-1 py-2 px-4 rounded-md transition-colors text-sm"
+                style={{
+                  backgroundColor: "#E8BE5D",
+                  color: "#344054",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}
+              >
+                Play again
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      );
+    };
+    const smallScreen = window.innerWidth <= 425;
+    const steps = [
+      {
+        element: ".back-arrow",
+        popover: {
+          title: "Back Button",
+          description: "Click here to go back to the main menu.",
+        },
+        style: {
+          title: {
+            fontSize: smallScreen ? "18px" : "16px",
+          },
+          description: {
+            fontSize: smallScreen ? "16px" : "14px",
+          },
+        },
+        stageRadius: 50,
+      },
+      {
+        element: ".game-title",
+        popover: {
+          title: "Game Title",
+          description: "This is the name of your current game.",
+        },
+        style: {
+          title: {
+            fontSize: smallScreen ? "18px" : "16px",
+          },
+          description: {
+            fontSize: smallScreen ? "16px" : "14px",
+          },
+        },
+        stageRadius: 80,
+      },
+      {
+        element: ".score",
+        popover: {
+          title: "Your Score",
+          description: "Keep track of how many correct answers you’ve gotten.",
+        },
+        style: {
+          title: {
+            fontSize: smallScreen ? "18px" : "16px",
+          },
+          description: {
+            fontSize: smallScreen ? "16px" : "14px",
+          },
+        },
+        stageRadius: 60,
+      },
+      {
+        element: ".time",
+        popover: {
+          title: "Timer",
+          description: "You have limited time. Watch it closely!",
+        },
+        style: {
+          title: {
+            fontSize: smallScreen ? "18px" : "16px",
+          },
+          description: {
+            fontSize: smallScreen ? "16px" : "14px",
+          },
+        },
+        stageRadius: 60,
+      },
+      {
+        element: ".target-letter",
+        popover: {
+          title: "Target Letter",
+          description: "This is the letter you need to find.",
+        },
+        style: {
+          title: {
+            fontSize: smallScreen ? "18px" : "16px",
+          },
+          description: {
+            fontSize: smallScreen ? "16px" : "14px",
+          },
+        },
+        stageRadius: 60,
+      },
+      {
+        element: ".game-board-wrapper",
+        popover: {
+          title: "Game Board",
+          description: "Tap the correct letter here!",
+        },
+        style: {
+          title: {
+            fontSize: smallScreen ? "18px" : "16px",
+          },
+          description: {
+            fontSize: smallScreen ? "16px" : "14px",
+          },
+        },
+        stageRadius: 150,
+      },
+      {
+        element: ".celebration",
+        popover: {
+          title: "Game Over",
+          description: "You’ve finished! Restart or go home.",
+          position: "center",
+        },
+        style: {
+          title: {
+            fontSize: smallScreen ? "18px" : "16px",
+          },
+          description: {
+            fontSize: smallScreen ? "16px" : "14px",
+          },
+        },
+        stageRadius: 80,
+      },
+    ];
 
+    useEffect(() => {
+      const tour = driver({
+        showButtons: true,
+        allowClose: true,
+        overlayOpacity: 0.75,
+        nextBtnText: "Next",
+        prevBtnText: "Back",
+        doneBtnText: "Done",
+        steps,
+        stageRadius: 100,
+        onHighlightStarted: () => {
+          // Pause game interaction and stop current sounds
+          SOUNDS.match.currentTime = 0;
+          SOUNDS.match.play();
 
-useEffect(() => {
-  const tour = driver({
-    showButtons: true,
-    allowClose: true,
-    overlayOpacity: 0.75,
-    nextBtnText: 'Next',
-    prevBtnText: 'Back',
-    doneBtnText: 'Done',
-    steps,
-    stageRadius: 100,
-    onHighlightStarted: () => {
-      // Pause game interaction and stop current sounds
-      SOUNDS.match.currentTime = 0;
-      SOUNDS.match.play();
+          // ❌ Cancel any speech like "Let's play Letter Hunt"
+          window.speechSynthesis.cancel();
+        },
+        onDestroyed: () => {
+          // ✅ Tour completed, now start the game
+          setGameReady(true);
+          startGame(); // Speech will now run only after tour is done
+        },
+      });
 
-      // ❌ Cancel any speech like "Let's play Letter Hunt"
-      window.speechSynthesis.cancel();
-    },
-    onDestroyed: () => {
-      // ✅ Tour completed, now start the game
-      setGameReady(true);
-      startGame(); // Speech will now run only after tour is done
-    },
-  });
-
-  setTimeout(() => {
-    tour.drive();
-  }, 500);
-}, []);
-
-
-
+      setTimeout(() => {
+        tour.drive();
+      }, 500);
+    }, []);
 
     return (
       <>
-     
-       <div
-        className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center px-2 sm:px-4"
-        style={{
-          backgroundImage: `url(${letterhunt})`,
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'top center',
-        }}
-      >
         <div
-  className={`rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-[98vw] sm:max-w-[900px] md:max-w-[1100px] ${
-    time <= 5 ? 'danger-mode' : ''
-  }`}
-  style={{
-    background: '#FFE098',
-  }}
->
-
-          {/* Header */}
-          <div className="game-header flex items-center justify-between mb-4 px-2">
-            <button onClick={() => setCurrentGame(null)} className="back-arrow">
-              <img
-                src={arrowLeft}
-                alt="arrow"
-                className="w-10 h-10 sm:w-8 sm:h-8"
-              />
-            </button>
-
-            <h2 className="game-title text-lg sm:text-2xl md:text-4xl font-bold text-black text-center">
-              Letter Hunt
-            </h2>
-
-            <img
-              src={cartoonIcon}
-              alt={soundEnabled ? 'Sound On' : 'Sound Off'}
-              onClick={() => setSoundEnabled(!soundEnabled)}
-              className="cursor-pointer hover:opacity-80 transition"
-            />
-          </div>
-
-          {/* Game Area */}
-          {isPlaying && (
-            <>
-              <div className="score-time mb-4 text-sm sm:text-lg font-bold flex justify-between items-center">
-                <span className="score text-black" style={{ fontSize: '20px' }}>
-                  Score: {score}
-                </span>
-                <span
-                className="time"
-                  style={{
-                    color: time <= 10 ? '#EF4444' : '#0D4B24',
-                    fontSize: '20px',
-                  }}
-                >
-                  Time: {time}s
-                </span>
-              </div>
-
-              <div
-                className="game-board-wrapper relative w-full h-[420px] sm:h-[500px] bg-white rounded-xl overflow-hidden flex flex-col justify-start"
-                style={{ paddingBottom: '30px' }}
+          className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center px-2 sm:px-4"
+          style={{
+            backgroundImage: `url(${letterhunt})`,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "top center",
+          }}
+        >
+          <div
+            className={`rounded-3xl shadow-lg p-4 sm:p-6 md:p-6 w-full max-w-[98vw] sm:max-w-[900px] md:max-w-[1100px] ${
+              time <= 5 ? "danger-mode" : ""
+            }`}
+            style={{
+              background: "#FFE098",
+            }}
+          >
+            {/* Header */}
+            <div className="game-header flex items-center justify-between mb-4 px-2">
+              <button
+                onClick={() => setCurrentGame(null)}
+                className="back-arrow"
               >
-                <div
-                  className="target-letter text-lg sm:text-2xl text-center p-2"
-                  style={{ fontSize: '28px', fontWeight: '500' }}
-                >
-                  Find the letter:
-                  {currentLetterObject && (
-                    <img
-                      src={currentLetterObject.CapitalLetter}
-                      alt={currentLetterObject.char}
-                      className="w-12 h-12 sm:w-16 sm:h-16 inline-block ml-2"
-                    />
-                  )}
-                </div>
+                <img
+                  src={arrowLeft}
+                  alt="arrow"
+                  className="w-10 h-10 sm:w-8 sm:h-8"
+                />
+              </button>
 
-                <div className="bg-[#FFEAB9] flex-1 rounded-[10px] p-3 sm:p-4 relative mx-2 sm:mx-6 overflow-hidden">
-                  {gameObjects.map((obj) => (
-                    <motion.div
-                      key={obj.id}
-                      className={`absolute cursor-pointer z-10 text-xl sm:text-3xl ${
-                        obj.color || ''
-                      }`}
-                      style={{
-                        top: obj.top,
-                        left: obj.left,
-                        transform: `rotate(${
-                          Math.random() * 60 - 30
-                        }deg) translateY(${Math.random() * 20 - 10}px)`,
-                      }}
-                      onClick={() => handleClick(obj)}
-                      whileHover={{ scale: 1.2 }}
-                      initial={{
-                        opacity: 0,
-                        scale: 0,
-                        y: Math.random() * 100 - 50,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                        y: 0,
-                        transition: {
-                          type: 'spring',
-                          stiffness: 100,
-                          damping: 10,
-                          duration: 0.8,
-                        },
-                      }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 300,
-                        bounce: 0.5,
-                      }}
-                    >
-                      {typeof obj.value === 'string' &&
-                      (obj.value.endsWith('.svg') ||
-                        obj.value.endsWith('.png') ||
-                        obj.value.startsWith('http')) ? (
-                        <img
-                          src={obj.value}
-                          alt="CapitalLetter"
-                          className="w-16 h-16 sm:w-20 sm:h-20"
-                          style={{
-                            transform: `rotate(${
-                              Math.random() * 40 - 20
-                            }deg)`,
-                          }}
-                        />
-                      ) : (
-                        obj.value
-                      )}
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
+              <h2 className="game-title text-lg sm:text-2xl md:text-4xl font-bold text-black text-center">
+                Letter Hunt
+              </h2>
 
-          {showGameOver && (
-            <div className="celebration">
-              <CelebrationDialog
-                onRestart={() => {
-                  setShowGameOver(false);
-                  startGame();
-                }}
-                onHome={() => setCurrentGame(null)}
-                onClose={() => setShowGameOver(false)}
-                score={score}
-                total={totalQuestions}
+              <img
+                src={cartoonIcon}
+                alt={soundEnabled ? "Sound On" : "Sound Off"}
+                onClick={() => setSoundEnabled(!soundEnabled)}
+                className="cursor-pointer hover:opacity-80 transition"
               />
             </div>
-          )}
+
+            {/* Game Area */}
+            {isPlaying && (
+              <>
+                <div className="score-time mb-4 text-sm sm:text-lg font-bold flex justify-between items-center">
+                  <span
+                    className="score text-black"
+                    style={{ fontSize: "20px" }}
+                  >
+                    Score: {score}
+                  </span>
+                  <span
+                    className="time"
+                    style={{
+                      color: time <= 10 ? "#EF4444" : "#0D4B24",
+                      fontSize: "20px",
+                    }}
+                  >
+                    Time: {time}s
+                  </span>
+                </div>
+
+                <div
+                  className="game-board-wrapper relative w-full h-[420px] sm:h-[400px] bg-white rounded-xl overflow-hidden flex flex-col justify-start"
+                  style={{ paddingBottom: "30px" }}
+                >
+                  <div
+                    className="target-letter text-lg sm:text-2xl text-center p-2"
+                    style={{ fontSize: "28px", fontWeight: "500" }}
+                  >
+                    Find the letter:
+                    {currentLetterObject && (
+                      <img
+                        src={currentLetterObject.CapitalLetter}
+                        alt={currentLetterObject.char}
+                        className="w-12 h-12 sm:w-16 sm:h-16 inline-block ml-2"
+                      />
+                    )}
+                  </div>
+
+                  <div className="bg-[#FFEAB9] flex-1 rounded-[10px] p-3 sm:p-4 relative mx-2 sm:mx-6 overflow-hidden">
+                    {gameObjects.map((obj) => (
+                      <motion.div
+                        key={obj.id}
+                        className={`absolute cursor-pointer z-10 text-xl sm:text-3xl ${
+                          obj.color || ""
+                        }`}
+                        style={{
+                          top: obj.top,
+                          left: obj.left,
+                          transform: `rotate(${
+                            Math.random() * 60 - 30
+                          }deg) translateY(${Math.random() * 20 - 10}px)`,
+                        }}
+                        onClick={() => handleClick(obj)}
+                        whileHover={{ scale: 1.2 }}
+                        initial={{
+                          opacity: 0,
+                          scale: 0,
+                          y: Math.random() * 100 - 50,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          scale: 1,
+                          y: 0,
+                          transition: {
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 10,
+                            duration: 0.8,
+                          },
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          bounce: 0.5,
+                        }}
+                      >
+                        {typeof obj.value === "string" &&
+                        (obj.value.endsWith(".svg") ||
+                          obj.value.endsWith(".png") ||
+                          obj.value.startsWith("http")) ? (
+                          <img
+                            src={obj.value}
+                            alt="CapitalLetter"
+                            className="w-10 h-10 sm:w-16 sm:h-16"
+                            style={{
+                              transform: `rotate(${
+                                Math.random() * 40 - 20
+                              }deg)`,
+                            }}
+                          />
+                        ) : (
+                          obj.value
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {showGameOver && (
+              <div className="celebration">
+                <CelebrationDialog
+                  onRestart={() => {
+                    setShowGameOver(false);
+                    startGame();
+                  }}
+                  onHome={() => setCurrentGame(null)}
+                  onClose={() => setShowGameOver(false)}
+                  score={score}
+                  total={totalQuestions}
+                />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
       </>
     );
   };
   // GamesScreen Component
-  const GamesScreen = ({ setCurrentScreen, selectedAvatar, setIsAvatarUpdate  }) => {
+  const GamesScreen = ({
+    setCurrentScreen,
+    selectedAvatar,
+    setIsAvatarUpdate,
+  }) => {
     const [currentGame, setCurrentGame] = useState(null);
 
     if (currentGame === "match") {
       return (
         <div>
           <LetterMatchGame setCurrentGame={setCurrentGame} />
-         
         </div>
       );
     }
@@ -1581,21 +1704,18 @@ useEffect(() => {
       return (
         <div>
           <LetterHuntGame setCurrentGame={setCurrentGame} />
-         
         </div>
       );
     }
 
     return (
-      
       <ChooseGame
-      setCurrentGame={setCurrentGame}
-      setCurrentScreen={setCurrentScreen}
-      goBack={() => setCurrentScreen("home")}
-      selectedAvatar={selectedAvatar}           // ✅ now available
-      setIsAvatarUpdate={setIsAvatarUpdate}     // ✅ for avatar click
-    />
-     
+        setCurrentGame={setCurrentGame}
+        setCurrentScreen={setCurrentScreen}
+        goBack={() => setCurrentScreen("home")}
+        selectedAvatar={selectedAvatar} // ✅ now available
+        setIsAvatarUpdate={setIsAvatarUpdate} // ✅ for avatar click
+      />
     );
   };
 
@@ -1628,21 +1748,23 @@ useEffect(() => {
   const renderScreen = () => {
     switch (currentScreen) {
       case "selectCharacter":
-        return <SelectCharacter
-        setCurrentScreen={handleScreenChange}
-        setSelectedAvatar={setSelectedAvatar}
-        selectedAvatar={selectedAvatar}
-        isAvatarUpdate={isAvatarUpdate}         // ✅ pass correctly
-      setIsAvatarUpdate={setIsAvatarUpdate}
-      />;
+        return (
+          <SelectCharacter
+            setCurrentScreen={handleScreenChange}
+            setSelectedAvatar={setSelectedAvatar}
+            selectedAvatar={selectedAvatar}
+            isAvatarUpdate={isAvatarUpdate} // ✅ pass correctly
+            setIsAvatarUpdate={setIsAvatarUpdate}
+          />
+        );
       case "home":
         return (
           <HomeScreen
-          setCurrentScreen={handleScreenChange}
-          goBack={() => setCurrentScreen("selectCharacter")}
-          selectedAvatar={selectedAvatar} // ✅ pass selected avatar here
-          setIsAvatarUpdate={setIsAvatarUpdate}
-        />
+            setCurrentScreen={handleScreenChange}
+            goBack={() => setCurrentScreen("selectCharacter")}
+            selectedAvatar={selectedAvatar} // ✅ pass selected avatar here
+            setIsAvatarUpdate={setIsAvatarUpdate}
+          />
         );
       case "learn":
         return (
@@ -1653,14 +1775,14 @@ useEffect(() => {
         );
       case "games":
         return <GamesScreen setCurrentScreen={handleScreenChange} />;
-        case "chooseGame":
-          return (
-            <GamesScreen
-      setCurrentScreen={handleScreenChange}
-      selectedAvatar={selectedAvatar} // ✅ pass this!
-      setIsAvatarUpdate={setIsAvatarUpdate} // ✅ pass if avatar click needs it
-    />
-          );
+      case "chooseGame":
+        return (
+          <GamesScreen
+            setCurrentScreen={handleScreenChange}
+            selectedAvatar={selectedAvatar} // ✅ pass this!
+            setIsAvatarUpdate={setIsAvatarUpdate} // ✅ pass if avatar click needs it
+          />
+        );
       case "progress":
         return <ProgressScreen />;
       // default:
@@ -1672,7 +1794,7 @@ useEffect(() => {
   const [showSplash, setShowSplash] = useState(false);
   // App's return statement
   return (
-    <div style={{ height: "100vh" ,msOverflowY:"scroll" }}>
+    <div style={{ height: "100vh", msOverflowY: "scroll" }}>
       {showIntro ? (
         <AnimatedIntro
           onStart={() => {

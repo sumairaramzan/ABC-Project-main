@@ -27,7 +27,7 @@ const HomeScreen = ({setCurrentScreen, goBack, selectedAvatar, setIsAvatarUpdate
       backgroundImage: `url(${BackgroundImage})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
-      height: smallScreen? "auto" : "100vh",
+      height: smallScreen? "100vh" : "100vh",
       width: "100vw",
       overflow: "hidden",
       display: "flex",
