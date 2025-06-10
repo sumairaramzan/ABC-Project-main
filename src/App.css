@@ -29,6 +29,7 @@ body,
   padding: 20px;
   position: relative;
 }
+
 .driver-popover {
   animation: popBounce 0.5s ease-out;
   border: 4px dashed #FFA500 !important;
@@ -662,7 +663,7 @@ body,
   display: flex;
   justify-content: center;
   padding: 0 8px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .card-grid-inner {

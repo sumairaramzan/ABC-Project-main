@@ -449,7 +449,7 @@ function App() {
         {/* Score and rating text */}
         <div className="space-y-1 mb-5">
           <p style={{ fontSize: "14px", fontWeight: "500", color: "#2E2E2E" }}>
-            Your Score: {score}/{total}.Rating: Excellent!
+            Your Score: {score}.Rating: Excellent!
           </p>
         </div>
 
@@ -848,7 +848,7 @@ function App() {
           title: "Back Button",
           description: "Click here to return to the main menu.",
         },
-      
+
         stageRadius: 50,
       },
       {
@@ -857,7 +857,7 @@ function App() {
           title: "Game Title",
           description: "This is the name of your current game.",
         },
-       
+
         stageRadius: 80,
       },
       {
@@ -866,33 +866,38 @@ function App() {
           title: "Game Board",
           description: "Match the correct cards here.",
         },
-      
+
         stageRadius: 120,
       },
     ];
     useEffect(() => {
-      const tour = driver({
-        showButtons: true,
-        allowClose: true,
-        overlayOpacity: 0.75,
-        nextBtnText: "Next",
-        prevBtnText: "Back",
-        doneBtnText: "Done",
-        steps,
-        stageRadius: 100,
-        onHighlightStarted: () => {
-          window.speechSynthesis.cancel();
-        },
-        onDestroyed: () => {
-          // Optional: Add any post-tour logic here
-        },
-      });
-    
-      setTimeout(() => {
-        tour.drive();
-      }, 500);
+      const hasSeenTour = localStorage.getItem("letterMatchTourSeen");
+
+      if (!hasSeenTour) {
+        const tour = driver({
+          showButtons: true,
+          allowClose: true,
+          overlayOpacity: 0.75,
+          nextBtnText: "Next",
+          prevBtnText: "Back",
+          doneBtnText: "Done",
+          steps,
+          stageRadius: 100,
+          onHighlightStarted: () => {
+            window.speechSynthesis.cancel();
+          },
+          onDestroyed: () => {
+            // ✅ Mark the tour as seen in localStorage
+            localStorage.setItem("letterMatchTourSeen", "true");
+            // Optional: Add any post-tour logic here
+          },
+        });
+
+        setTimeout(() => {
+          tour.drive();
+        }, 500);
+      }
     }, []);
-    
 
     return (
       <div
@@ -995,38 +1000,39 @@ function App() {
           </div>
 
           {/* Celebration Dialog */}
-          {showCelebration && (
-            <CelebrationDialog
-              onRestart={() => {
-                setShowCelebration(false);
-                setCards([]);
-                setFlippedCards([]);
-                setMatchedPairs([]);
-                setMoves(0);
-                setScore(0);
-                const gameData = alphabetData.slice(0, 6);
-                const cardPairs = gameData.flatMap((item) => [
-                  {
-                    id: `letter_${item.letter}`,
-                    type: "letter",
-                    value: item.letter,
-                    content: item.letter,
-                    name: item.name,
-                  },
-                  {
-                    id: `picture_${item.animal}`,
-                    type: "picture",
-                    value: item.letter,
-                    content: item.animal,
-                    name: item.name,
-                  },
-                ]);
-                setCards([...cardPairs].sort(() => Math.random() - 0.5));
-              }}
-              onHome={() => setCurrentScreen("home")}
-            />
-          )}
         </div>
+
+        {showCelebration && (
+          <CelebrationDialog
+            onRestart={() => {
+              setShowCelebration(false);
+              setCards([]);
+              setFlippedCards([]);
+              setMatchedPairs([]);
+              setMoves(0);
+              setScore(0);
+              const gameData = alphabetData.slice(0, 6);
+              const cardPairs = gameData.flatMap((item) => [
+                {
+                  id: `letter_${item.letter}`,
+                  type: "letter",
+                  value: item.letter,
+                  content: item.letter,
+                  name: item.name,
+                },
+                {
+                  id: `picture_${item.animal}`,
+                  type: "picture",
+                  value: item.letter,
+                  content: item.animal,
+                  name: item.name,
+                },
+              ]);
+              setCards([...cardPairs].sort(() => Math.random() - 0.5));
+            }}
+            onHome={() => setCurrentScreen("home")}
+          />
+        )}
       </div>
     );
   };
@@ -1044,13 +1050,13 @@ function App() {
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [totalQuestions] = useState(10);
     const [gameReady, setGameReady] = useState(false);
+    const [showCelebrationDialog, setShowCelebrationDialog] = useState(false);
 
     // Helper function to calculate rating
-    const getRating = (score, total) => {
-      const percentage = (score / total) * 100;
-      if (percentage >= 90) return { text: "Excellent!", color: "#1CA34E" };
-      if (percentage >= 70) return { text: "Good!", color: "#4CAF50" };
-      if (percentage >= 50) return { text: "Fair!", color: "#FFC107" };
+    const getRating = (score) => {
+      if (score >= 9) return { text: "Excellent!", color: "#1CA34E" };
+      if (score >= 7) return { text: "Good!", color: "#4CAF50" };
+      if (score >= 5) return { text: "Fair!", color: "#FFC107" };
       return { text: "Try Again", color: "#F44336" };
     };
 
@@ -1195,10 +1201,10 @@ function App() {
     };
 
     useEffect(() => {
-      if (!isPlaying) {
+      if (!isPlaying && !showGameOver && score === 0) {
         startGame();
       }
-    }, []);
+    }, [isPlaying, showGameOver, score]);
 
     const handleClick = async (obj) => {
       if (!isPlaying) return;
@@ -1216,9 +1222,7 @@ function App() {
         oscillator.start();
         setTimeout(() => oscillator.stop(), 100);
 
-        if (score < totalQuestions) {
-          setScore((prevScore) => prevScore + 1);
-        }
+        setScore((prevScore) => prevScore + 1);
 
         if (soundEnabled) {
           try {
@@ -1270,7 +1274,7 @@ function App() {
       total,
       onClose,
     }) => {
-      const rating = getRating(score, total);
+      const rating = getRating(score);
 
       const isLowScore = score < 5;
 
@@ -1335,7 +1339,7 @@ function App() {
                   color: "#2E2E2E",
                 }}
               >
-                Your Score: {Math.min(score, total)}/{total}. Rating:
+                Your Score: {score}. Rating:
                 <span style={{ color: ratingColor, marginLeft: "4px" }}>
                   {ratingText}
                 </span>
@@ -1491,33 +1495,42 @@ function App() {
     ];
 
     useEffect(() => {
-      const tour = driver({
-        showButtons: true,
-        allowClose: true,
-        overlayOpacity: 0.75,
-        nextBtnText: "Next",
-        prevBtnText: "Back",
-        doneBtnText: "Done",
-        steps,
-        stageRadius: 100,
-        onHighlightStarted: () => {
-          // Pause game interaction and stop current sounds
-          SOUNDS.match.currentTime = 0;
-          SOUNDS.match.play();
+      const hasSeenTour = localStorage.getItem("letterMatchTourSeen");
 
-          // ❌ Cancel any speech like "Let's play Letter Hunt"
-          window.speechSynthesis.cancel();
-        },
-        onDestroyed: () => {
-          // ✅ Tour completed, now start the game
-          setGameReady(true);
-          startGame(); // Speech will now run only after tour is done
-        },
-      });
+      if (!hasSeenTour) {
+        const tour = driver({
+          showButtons: true,
+          allowClose: true,
+          overlayOpacity: 0.75,
+          nextBtnText: "Next",
+          prevBtnText: "Back",
+          doneBtnText: "Done",
+          steps,
+          stageRadius: 100,
+          onHighlightStarted: () => {
+            // Pause sounds
+            SOUNDS.match.currentTime = 0;
+            SOUNDS.match.play();
+            window.speechSynthesis.cancel(); // Cancel speech
+          },
+          onDestroyed: () => {
+            // ✅ Mark as seen
+            localStorage.setItem("letterMatchTourSeen", "true");
 
-      setTimeout(() => {
-        tour.drive();
-      }, 500);
+            // ✅ Tour completed — start the game
+            setGameReady(true);
+            startGame();
+          },
+        });
+
+        setTimeout(() => {
+          tour.drive();
+        }, 500);
+      } else {
+        // ✅ If already seen, start game immediately
+        setGameReady(true);
+        startGame();
+      }
     }, []);
 
     return (
@@ -1533,7 +1546,7 @@ function App() {
         >
           <div
             className={`rounded-3xl shadow-lg p-4 sm:p-6 md:p-6 w-full max-w-[98vw] sm:max-w-[900px] md:max-w-[1100px] ${
-              time <= 5 ? "danger-mode" : ""
+              time > 0 && time <= 5 ? "danger-mode" : ""
             }`}
             style={{
               background: "#FFE098",
@@ -1565,122 +1578,115 @@ function App() {
             </div>
 
             {/* Game Area */}
-            {isPlaying && (
-              <>
-                <div className="score-time mb-4 text-sm sm:text-lg font-bold flex justify-between items-center">
-                  <span
-                    className="score text-black"
-                    style={{ fontSize: "20px" }}
-                  >
-                    Score: {score}
-                  </span>
-                  <span
-                    className="time"
-                    style={{
-                      color: time <= 10 ? "#EF4444" : "#0D4B24",
-                      fontSize: "20px",
-                    }}
-                  >
-                    Time: {time}s
-                  </span>
-                </div>
 
-                <div
-                  className="game-board-wrapper relative w-full h-[420px] sm:h-[400px] bg-white rounded-xl overflow-hidden flex flex-col justify-start"
-                  style={{ paddingBottom: "30px" }}
-                >
-                  <div
-                    className="target-letter text-lg sm:text-2xl text-center p-2"
-                    style={{ fontSize: "28px", fontWeight: "500" }}
-                  >
-                    Find the letter:
-                    {currentLetterObject && (
-                      <img
-                        src={currentLetterObject.CapitalLetter}
-                        alt={currentLetterObject.char}
-                        className="w-12 h-12 sm:w-16 sm:h-16 inline-block ml-2"
-                      />
-                    )}
-                  </div>
-
-                  <div className="bg-[#FFEAB9] flex-1 rounded-[10px] p-3 sm:p-4 relative mx-2 sm:mx-6 overflow-hidden">
-                    {gameObjects.map((obj) => (
-                      <motion.div
-                        key={obj.id}
-                        className={`absolute cursor-pointer z-10 text-xl sm:text-3xl ${
-                          obj.color || ""
-                        }`}
-                        style={{
-                          top: obj.top,
-                          left: obj.left,
-                          transform: `rotate(${
-                            Math.random() * 60 - 30
-                          }deg) translateY(${Math.random() * 20 - 10}px)`,
-                        }}
-                        onClick={() => handleClick(obj)}
-                        whileHover={{ scale: 1.2 }}
-                        initial={{
-                          opacity: 0,
-                          scale: 0,
-                          y: Math.random() * 100 - 50,
-                        }}
-                        animate={{
-                          opacity: 1,
-                          scale: 1,
-                          y: 0,
-                          transition: {
-                            type: "spring",
-                            stiffness: 100,
-                            damping: 10,
-                            duration: 0.8,
-                          },
-                        }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 300,
-                          bounce: 0.5,
-                        }}
-                      >
-                        {typeof obj.value === "string" &&
-                        (obj.value.endsWith(".svg") ||
-                          obj.value.endsWith(".png") ||
-                          obj.value.startsWith("http")) ? (
-                          <img
-                            src={obj.value}
-                            alt="CapitalLetter"
-                            className="w-10 h-10 sm:w-16 sm:h-16"
-                            style={{
-                              transform: `rotate(${
-                                Math.random() * 40 - 20
-                              }deg)`,
-                            }}
-                          />
-                        ) : (
-                          obj.value
-                        )}
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {showGameOver && (
-              <div className="celebration">
-                <CelebrationDialog
-                  onRestart={() => {
-                    setShowGameOver(false);
-                    startGame();
+            <>
+              <div className="score-time mb-4 text-sm sm:text-lg font-bold flex justify-between items-center">
+                <span className="score text-black" style={{ fontSize: "20px" }}>
+                  Score: {score}
+                </span>
+                <span
+                  className="time"
+                  style={{
+                    color: time <= 5 ? "#EF4444" : "#0D4B24",
+                    fontSize: "20px",
                   }}
-                  onHome={() => setCurrentGame(null)}
-                  onClose={() => setShowGameOver(false)}
-                  score={score}
-                  total={totalQuestions}
-                />
+                >
+                  Time: {time}s
+                </span>
               </div>
-            )}
+
+              <div
+                className="game-board-wrapper relative w-full h-[420px] sm:h-[400px] bg-white rounded-xl overflow-hidden flex flex-col justify-start"
+                style={{ paddingBottom: "30px" }}
+              >
+                <div
+                  className="target-letter text-lg sm:text-2xl text-center p-2"
+                  style={{ fontSize: "28px", fontWeight: "500" }}
+                >
+                  Find the letter:
+                  {currentLetterObject && (
+                    <img
+                      src={currentLetterObject.CapitalLetter}
+                      alt={currentLetterObject.char}
+                      className="w-12 h-12 sm:w-16 sm:h-16 inline-block ml-2"
+                    />
+                  )}
+                </div>
+
+                <div className="bg-[#FFEAB9] flex-1 rounded-[10px] p-3 sm:p-4 relative mx-2 sm:mx-6 overflow-hidden">
+                  {gameObjects.map((obj) => (
+                    <motion.div
+                      key={obj.id}
+                      className={`absolute cursor-pointer z-10 text-xl sm:text-3xl ${
+                        obj.color || ""
+                      }`}
+                      style={{
+                        top: obj.top,
+                        left: obj.left,
+                        transform: `rotate(${
+                          Math.random() * 60 - 30
+                        }deg) translateY(${Math.random() * 20 - 10}px)`,
+                      }}
+                      onClick={() => handleClick(obj)}
+                      whileHover={{ scale: 1.2 }}
+                      initial={{
+                        opacity: 0,
+                        scale: 0,
+                        y: Math.random() * 100 - 50,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                        y: 0,
+                        transition: {
+                          type: "spring",
+                          stiffness: 100,
+                          damping: 10,
+                          duration: 0.8,
+                        },
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        bounce: 0.5,
+                      }}
+                    >
+                      {typeof obj.value === "string" &&
+                      (obj.value.endsWith(".svg") ||
+                        obj.value.endsWith(".png") ||
+                        obj.value.startsWith("http")) ? (
+                        <img
+                          src={obj.value}
+                          alt="CapitalLetter"
+                          className="w-10 h-10 sm:w-16 sm:h-16"
+                          style={{
+                            transform: `rotate(${Math.random() * 40 - 20}deg)`,
+                          }}
+                        />
+                      ) : (
+                        obj.value
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </>
           </div>
         </div>
+        {showGameOver && (
+          <div className="celebration">
+            <CelebrationDialog
+              onRestart={() => {
+                setShowGameOver(false);
+                startGame();
+              }}
+              onHome={() => setCurrentGame(null)}
+              onClose={() => setShowGameOver(false)}
+              score={score}
+              total={totalQuestions}
+            />
+          </div>
+        )}
       </>
     );
   };
@@ -1774,7 +1780,13 @@ function App() {
           />
         );
       case "games":
-        return <GamesScreen setCurrentScreen={handleScreenChange} />;
+        return (
+          <GamesScreen
+            setCurrentScreen={handleScreenChange}
+            selectedAvatar={selectedAvatar}
+            setIsAvatarUpdate={setIsAvatarUpdate}
+          />
+        );
       case "chooseGame":
         return (
           <GamesScreen

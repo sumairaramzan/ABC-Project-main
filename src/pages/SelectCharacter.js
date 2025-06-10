@@ -30,11 +30,21 @@ const SelectCharacter = ({
 }) => {
   const [selected, setSelected] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
   useEffect(() => {
-    if (!selectedAvatar) {
+    console.log("selectedAvatar:", selectedAvatar);
+    if (selectedAvatar) {
+      const index = avatars.indexOf(selectedAvatar);
+      if (index !== -1) {
+        setSelected(index);
+      }
+    } else {
+      // Fallback to first avatar
+      setSelected(0);
       setSelectedAvatar(avatars[0]);
     }
-  }, [selectedAvatar, setSelectedAvatar]);
+  }, [selectedAvatar]);
+  
 
   const handleSubmit = () => {
     setCurrentScreen("home");
@@ -42,24 +52,9 @@ const SelectCharacter = ({
   };
 
   const avatars = [
-    Avatar1,
-    Avatar2,
-    Avatar3,
-    Avatar4,
-    Avatar5,
-    Avatar6,
-    Avatar7,
-    Avatar8,
-    Avatar9,
-    Avatar10,
-    Avatar11,
-    Avatar12,
-    Avatar13,
-    Avatar14,
-    Avatar15,
-    Avatar16,
-    Avatar17,
-    Avatar18,
+    Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6, Avatar7, Avatar8,
+    Avatar9, Avatar10, Avatar11, Avatar12, Avatar13, Avatar14, Avatar15,
+    Avatar16, Avatar17, Avatar18,
   ];
 
   useEffect(() => {
@@ -71,52 +66,78 @@ const SelectCharacter = ({
   const getGridColumns = () => {
     if (windowWidth <= 480) return 3;
     if (windowWidth <= 768) return 4;
-    if (windowWidth <= 1024) return 4; // Changed from 5 to 4 for better spacing
+    if (windowWidth <= 1024) return 5;
     return 6;
   };
 
   const getCardWidth = () => {
-    if (windowWidth <= 480) return "100%";
-    if (windowWidth <= 768) return "95%";
-    if (windowWidth <= 1024) return "1080px"; // Changed from 95% to 90%
+    if (windowWidth <= 480) return "95%";
+    if (windowWidth <= 768) return "90%";
+    if (windowWidth <= 1024) return "85%";
     return "1200px";
   };
 
-  const handleSelect = (index) => setSelected(index);
+  const getContainerPadding = () => {
+    if (windowWidth <= 480) return "15px";
+    if (windowWidth <= 768) return "20px";
+    if (windowWidth <= 1024) return "30px";
+    return "40px";
+  };
+
+  const getAvatarSize = () => {
+    if (windowWidth <= 320) return "60px";
+    if (windowWidth <= 480) return "70px";
+    if (windowWidth <= 768) return "80px";
+    if (windowWidth <= 1024) return "85px";
+    return "95px";
+  };
+
+  const handleSelect = (index) => {
+    setSelected(index);
+    setSelectedAvatar(avatars[index]); // ✅ this line updates the global avatar state
+  };
+  
 
   const styles = {
     container: {
       fontFamily: "'Arial Rounded MT Bold', sans-serif",
       backgroundColor: "#6AA9FF",
       minHeight: "100vh",
-      padding: "10px 20px",
+      padding: getContainerPadding(),
       boxSizing: "border-box",
+      display: "flex",
+      flexDirection: "column",
+      
     },
     headerContainer: {
-      maxWidth: "700px",
-      textAlign: "left",
+      width: "100%",
+      maxWidth: windowWidth <= 768 ? "100%" : "800px",
+      marginBottom: windowWidth <= 480 ? "20px" : "30px",
+      textAlign: windowWidth <= 768 ? "center" : "left",
     },
     header: {
       color: "#FFB800",
       fontWeight: "bold",
-      fontSize: windowWidth <= 480 ? "28px" : "38px",
-     
+      fontSize: windowWidth <= 480 ? "28px" : windowWidth <= 768 ? "32px" : "38px",
+      marginBottom: "10px",
     },
     subtext: {
       color: "#ffffff",
-      fontSize: windowWidth <= 480 ? "14px" : "18px",
-     
+      fontSize: windowWidth <= 480 ? "14px" : windowWidth <= 768 ? "16px" : "18px",
+      lineHeight: "1.4",
     },
     selectedChar: {
-      width: "80px",
-      height: "80px",
+      width: windowWidth <= 480 ? "100px" : "120px",
+      height: windowWidth <= 480 ? "100px" : "120px",
       borderRadius: "50%",
       backgroundColor: "#fff",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      margin: "0 auto 10px",
+      margin: "0 auto 20px",
       overflow: "hidden",
+      border: "4px solid #FFB800",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
     },
     selectedImg: {
       width: "100%",
@@ -125,11 +146,11 @@ const SelectCharacter = ({
     },
     card: {
       backgroundColor: "#FFE29D",
-      borderRadius: "15px",
-      padding: windowWidth <= 768 ? "20px 15px" : "16px 20px", // Responsive padding
+      borderRadius: "20px",
+      padding: windowWidth <= 768 ? "20px 15px" : "25px",
       width: getCardWidth(),
       margin: "0 auto",
-      boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+      boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -137,27 +158,31 @@ const SelectCharacter = ({
     grid: {
       display: "grid",
       gridTemplateColumns: `repeat(${getGridColumns()}, 1fr)`,
-      gap: "10px",
+      gap: windowWidth <= 768 ? "12px" : "16px",
       width: "100%",
       justifyItems: "center",
       alignItems: "center",
-      marginBottom: "20px",
+      marginBottom: "25px",
+      padding: windowWidth <= 480 ? "10px" : "15px",
     },
     avatarWrapper: (index) => ({
-      width: windowWidth <= 320 ? "60px" : windowWidth <= 768 ? "90px" : "95px",
-      height:
-        windowWidth <= 320 ? "60px" : windowWidth <= 768 ? "90px" : "95px",
+      width: getAvatarSize(),
+      height: getAvatarSize(),
       borderRadius: "50%",
       backgroundColor: "#fff",
       overflow: "hidden",
       cursor: "pointer",
-      border:
-        selected === index ? "3px solid #0056ff" : "2px solid transparent",
-      boxShadow: selected === index ? "0 0 8px rgba(0, 86, 255, 0.5)" : "none",
+      border: selected === index ? "3px solid #0056ff" : "2px solid transparent",
+      boxShadow: selected === index 
+        ? "0 0 12px rgba(0, 86, 255, 0.6)" 
+        : "0 2px 6px rgba(0,0,0,0.1)",
       transition: "all 0.3s ease",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      "&:hover": {
+        transform: "scale(1.05)",
+      },
     }),
     avatarImg: {
       width: "100%",
@@ -168,10 +193,20 @@ const SelectCharacter = ({
       backgroundColor: "#388bff",
       color: "#fff",
       border: "none",
-      padding: "12px 20px",
-      borderRadius: "8px",
-      fontSize: "16px",
+      padding: windowWidth <= 480 ? "10px 20px" : "14px 28px",
+      borderRadius: "10px",
+      fontSize: windowWidth <= 480 ? "14px" : "16px",
       cursor: "pointer",
+      fontWeight: "600",
+      transition: "all 0.3s ease",
+      boxShadow: "0 2px 8px rgba(56, 139, 255, 0.3)",
+      "&:hover": {
+        backgroundColor: "#2c7ae7",
+        transform: "translateY(-2px)",
+      },
+      "&:active": {
+        transform: "translateY(0)",
+      },
     },
   };
 

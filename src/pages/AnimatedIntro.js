@@ -158,7 +158,7 @@ const AnimatedIntro = ({ onStart }) => {
               <img
                 src={character}
                 alt="character"
-                className="w-[80%] md:w-full h-auto"
+                className="max-w-full h-auto"
               />
             </div>
           </motion.div>
