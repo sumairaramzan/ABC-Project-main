@@ -1495,9 +1495,9 @@ function App() {
     ];
 
     useEffect(() => {
-      const hasSeenTour = localStorage.getItem("letterMatchTourSeen");
+      const hasSeenTours = localStorage.getItem("letterMatchTourSeen");
 
-      if (!hasSeenTour) {
+      if (!hasSeenTours) {
         const tour = driver({
           showButtons: true,
           allowClose: true,
