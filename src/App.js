@@ -1495,7 +1495,7 @@ function App() {
     ];
 
     useEffect(() => {
-      const hasSeenTours = localStorage.getItem("letterMatchTourSeen");
+      const hasSeenTours = localStorage.getItem("letterMatchTourSeens");
 
       if (!hasSeenTours) {
         const tour = driver({
@@ -1515,7 +1515,7 @@ function App() {
           },
           onDestroyed: () => {
             // ✅ Mark as seen
-            localStorage.setItem("letterMatchTourSeen", "true");
+            localStorage.setItem("letterMatchTourSeens", "true");
 
             // ✅ Tour completed — start the game
             setGameReady(true);
