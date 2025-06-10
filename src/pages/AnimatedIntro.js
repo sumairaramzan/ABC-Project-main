@@ -103,7 +103,7 @@ const AnimatedIntro = ({ onStart }) => {
         {/* Character Screen */}
         {steps[step] === "characterScreen" && (
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 w-full px-4 md:px-10 absolute top-0 left-0"
+            className="grid grid-cols-1 md:grid-cols-2 w-full h-full px-2 md:px-10 absolute top-0 left-0"
             initial={{ x: "100vw", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "-100vw", opacity: 0 }}
@@ -158,7 +158,7 @@ const AnimatedIntro = ({ onStart }) => {
               <img
                 src={character}
                 alt="character"
-                className="w-4/5 sm:w-3/5 md:w-[500px] lg:w-[600px] max-w-full h-auto"
+                className="w-[80%] md:w-full h-auto"
               />
             </div>
           </motion.div>
