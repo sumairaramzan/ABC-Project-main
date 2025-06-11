@@ -91,18 +91,18 @@ const SelectCharacter = ({
     header: {
       color: "#FFB800",
       fontWeight: "bold",
-      fontSize: windowWidth <= 480 ? "28px" : "36px",
+      fontSize: windowWidth <= 480 ? "28px" : "40px",
       WebkitTextStroke: "1px black",
       textStroke: "1px black",
     },
     subtext: {
       color: "#ffffff",
-      fontSize: windowWidth <= 480 ? "14px" : "16px",
+      fontSize: windowWidth <= 480 ? "14px" : "20px",
       marginTop: "5px",
     },
     selectedChar: {
       width: "120px",
-      height: "120px",
+      height: "114px",
       borderRadius: "50%",
       backgroundColor: "#fff",
       margin: "0px auto 10px",

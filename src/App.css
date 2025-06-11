@@ -159,7 +159,16 @@ body,
   font-weight: 500;
   font-size: 28px;
 }
-
+@media (max-width: 1024px) {
+  .footer-number {
+    position: absolute;
+    bottom: 31px;
+    left: 500px;
+   }
+  .board {
+    height: 800px;
+  }
+}
 .arrow-next {
   position: absolute;
   bottom: 32px;
@@ -221,11 +230,7 @@ body,
 }
 
 /* Responsive Media Queries */
-@media (max-width: 1024px) {
-  .board {
-    height: 800px;
-  }
-}
+
 
 /* in your CSS or styled-component */
 .card {
@@ -270,7 +275,7 @@ body,
 
   .footer-number {
     bottom: 50px;
-    left: 270px;
+    left: 310px;
   }
 
   .arrow-next {
@@ -578,7 +583,7 @@ body,
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-size: cover;
+  background-size: 100% 100%;
   background-position: center;
 }
 
@@ -630,11 +635,45 @@ body,
 }
 
 .danger-mode {
-  animation: dangerPulse 1.5s ease-in-out infinite, dangerShake 0.3s ease-in-out infinite;
-  border: 4px solid red;
-  background-color: #ffe098 !important;
+  animation: dangerPulse 1.2s ease-in-out infinite, dangerShake 0.2s ease-in-out infinite;
+  border: 5px solid red;
+  background: linear-gradient(45deg, #ffe098, #ff5c5c);
   transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 0 0 40px rgba(255, 0, 0, 0.4) inset;
+  transform: scale(1.05);
 }
+
+/* Pulse animation: stronger */
+@keyframes dangerPulse {
+  0%, 100% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.7;
+  }
+}
+
+/* Shake animation: more intense */
+@keyframes dangerShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
 
 /* Header */
 .game-header {

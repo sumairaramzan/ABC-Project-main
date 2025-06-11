@@ -202,6 +202,7 @@ const alphabetData = [
     animal: appleIcon,
     name: "Apple",
     CapitalLetter: A,
+    singleAnimal: apple,
   },
   {
     char: "B",
@@ -209,6 +210,7 @@ const alphabetData = [
     animal: ballIcon,
     name: "Ball",
     CapitalLetter: B,
+    singleAnimal: ball,
   },
   {
     char: "C",
@@ -216,6 +218,7 @@ const alphabetData = [
     animal: cAnimal,
     name: "Cat",
     CapitalLetter: C,
+    singleAnimal: cat,
   },
   {
     char: "D",
@@ -223,6 +226,7 @@ const alphabetData = [
     animal: dAnimal,
     name: "Dog",
     CapitalLetter: D,
+    singleAnimal: dog,
   },
   {
     char: "E",
@@ -230,6 +234,7 @@ const alphabetData = [
     animal: eAnimal,
     name: "Elephant",
     CapitalLetter: E,
+    singleAnimal: elephant,
   },
   {
     char: "F",
@@ -237,6 +242,7 @@ const alphabetData = [
     animal: fAnimal,
     name: "Fish",
     CapitalLetter: F,
+    singleAnimal: fish,
   },
   {
     char: "G",
@@ -244,6 +250,7 @@ const alphabetData = [
     animal: gAnimal,
     name: "Giraffe",
     CapitalLetter: G,
+    singleAnimal: giraffe,
   },
   {
     char: "H",
@@ -251,6 +258,7 @@ const alphabetData = [
     animal: hAnimal,
     name: "Hat",
     CapitalLetter: H,
+    singleAnimal: hat,
   },
   {
     char: "I",
@@ -265,6 +273,7 @@ const alphabetData = [
     animal: jAnimal,
     name: "Juice",
     CapitalLetter: J,
+    singleAnimal: juice,
   },
   {
     char: "K",
@@ -272,6 +281,7 @@ const alphabetData = [
     animal: kAnimal,
     name: "Koala",
     CapitalLetter: K,
+    singleAnimal: koala,
   },
   {
     char: "L",
@@ -279,6 +289,7 @@ const alphabetData = [
     animal: lAnimal,
     name: "Lion",
     CapitalLetter: L,
+    singleAnimal: lion,
   },
   {
     char: "M",
@@ -286,6 +297,7 @@ const alphabetData = [
     animal: mAnimal,
     name: "Moon",
     CapitalLetter: M,
+    singleAnimal: moon,
   },
   {
     char: "N",
@@ -293,6 +305,7 @@ const alphabetData = [
     animal: nAnimal,
     name: "Necklace",
     CapitalLetter: N,
+    singleAnimal: necklace,
   },
   {
     char: "O",
@@ -300,6 +313,7 @@ const alphabetData = [
     animal: oAnimal,
     name: "Orange",
     CapitalLetter: O,
+    singleAnimal: orange,
   },
   {
     char: "P",
@@ -307,6 +321,7 @@ const alphabetData = [
     animal: pAnimal,
     name: "Penguin",
     CapitalLetter: P,
+    singleAnimal: penguin,
   },
   {
     char: "Q",
@@ -314,6 +329,7 @@ const alphabetData = [
     animal: qAnimal,
     name: "Queen",
     CapitalLetter: Q,
+    singleAnimal: queen,
   },
   {
     char: "R",
@@ -321,6 +337,7 @@ const alphabetData = [
     animal: rAnimal,
     name: "Rabbit",
     CapitalLetter: R,
+    singleAnimal: rabit,
   },
   {
     char: "S",
@@ -328,6 +345,7 @@ const alphabetData = [
     animal: sAnimal,
     name: "Sun",
     CapitalLetter: S,
+    singleAnimal: sun,
   },
   {
     char: "T",
@@ -335,6 +353,7 @@ const alphabetData = [
     animal: tAnimal,
     name: "Tree",
     CapitalLetter: T,
+    singleAnimal: tree,
   },
   {
     char: "U",
@@ -342,6 +361,7 @@ const alphabetData = [
     animal: uAnimal,
     name: "Unicorn",
     CapitalLetter: U,
+    singleAnimal: unicorn,
   },
   {
     char: "V",
@@ -349,6 +369,7 @@ const alphabetData = [
     animal: vAnimal,
     name: "Violin",
     CapitalLetter: V,
+    singleAnimal: violin,
   },
   {
     char: "W",
@@ -356,6 +377,7 @@ const alphabetData = [
     animal: wAnimal,
     name: "Whale",
     CapitalLetter: W,
+    singleAnimal: whale,
   },
   {
     char: "X",
@@ -363,6 +385,7 @@ const alphabetData = [
     animal: xAnimal,
     name: "Xylophone",
     CapitalLetter: X,
+    singleAnimal: xylophone,
   },
   {
     char: "Y",
@@ -370,6 +393,7 @@ const alphabetData = [
     animal: yAnimal,
     name: "Yellow",
     CapitalLetter: Y,
+    singleAnimal: yellow,
   },
   {
     char: "Z",
@@ -377,6 +401,7 @@ const alphabetData = [
     animal: zAnimal,
     name: "Zebra",
     CapitalLetter: Z,
+    singleAnimal: zebra,
   },
 ];
 
@@ -682,6 +707,11 @@ function App() {
             <div className="content-row">
               <div className="letter-box">
                 <img
+                 onClick={() => {
+                  if (!isSpeaking && soundEnabled) {
+                    playSound(currentLetter.char, currentLetter.name);
+                  }
+                }}
                   src={currentLetter.letter}
                   alt="Letter"
                   className="image-fit"
@@ -766,7 +796,7 @@ function App() {
           id: `picture_${item.char}`,
           type: "picture",
           value: item.char,
-          content: item.animal,
+          content: item.singleAnimal,
           name: item.name,
         },
       ]);
