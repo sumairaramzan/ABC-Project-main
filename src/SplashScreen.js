@@ -104,30 +104,40 @@ const SplashScreen = ({ onComplete }) => {
       </div>
 
       {/* Loading Text */}
-      <motion.div
-        className="text-4xl font-bold text-pink-500"
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1.1 }}
-        transition={{
-          duration: 0.6,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
-      >
-        {loadingProgress}%
-      </motion.div>
+     {/* Loading Text */}
+<div className="mb-4 text-center text-[#E8AD00] text-[40px] font-semibold">
+  Loading...
+</div>
 
-      {/* Progress Bar */}
-      <div className="w-full px-8 flex justify-center">
-        <div className="w-full md:w-1/2 h-4  rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-gradient-to-r from-blue-400 to-purple-400"
-            initial={{ width: '0%' }}
-            animate={{ width: `${loadingProgress}%` }}
-            transition={{ duration: 0.3 }}
-          />
-        </div>
-      </div>
+{/* Progress Bar with Percentage */}
+<div className="w-full px-8 flex justify-center">
+  <div className="w-full md:w-1/2 flex items-center gap-4">
+    {/* Progress Bar */}
+    <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
+      <motion.div
+        className="h-full bg-gradient-to-r from-blue-400 to-purple-400"
+        initial={{ width: '0%' }}
+        animate={{ width: `${loadingProgress}%` }}
+        transition={{ duration: 0.3 }}
+      />
+    </div>
+
+    {/* Percentage Text */}
+    <motion.div
+      className="text-[#344054] text-[20px] font-semibold"
+      initial={{ scale: 0.9 }}
+      animate={{ scale: 1.1 }}
+      transition={{
+        duration: 0.6,
+        repeat: Infinity,
+        repeatType: "reverse",
+      }}
+    >
+      {loadingProgress}%
+    </motion.div>
+  </div>
+</div>
+
     </motion.div>
   );
 };
