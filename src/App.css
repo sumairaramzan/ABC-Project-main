@@ -305,6 +305,8 @@ body,
     top: 5px !important;
     right: 3px !important;
     cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    border: 4px solid #FFB800;
 }
   .arrow-back-top {
     top: 5px;
@@ -375,6 +377,8 @@ body,
     top: 5px;
     right: 3px;
     cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    border: 4px solid #FFB800;
 }
   .avatarGridWrapper {
     background-color: #ffe09c;
@@ -442,6 +446,8 @@ body,
     top: 5px;
     right: 3px;
     cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    border: 4px solid #FFB800;
 }
   .board {
     margin-top: 450px;
@@ -583,7 +589,7 @@ body,
   background-color: #a4c7ff;
   padding: 12px;
   width: 95vw;
-  max-width: 1400px;
+  max-width: 1100px;
   display: flex;
   flex-direction: column;
 }
@@ -642,7 +648,7 @@ body,
 .game-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: white;
+  color: #18386B;
   text-align: center;
 }
 
@@ -668,7 +674,7 @@ body,
 
 .card-grid-inner {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1100px;
   padding: 0 8px;
 }
 
@@ -695,6 +701,7 @@ body,
   top: 20px;
   right: 20px;
   cursor: pointer;
+  
 }
 
 .user-avatar2{
@@ -705,6 +712,8 @@ body,
   top: 20px;
   right: 20px;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  border: 4px solid #FFB800;
 }
 
 
@@ -754,7 +763,7 @@ body,
 .progress-section {
   width: 100%;
   margin-bottom: 12px;
-  padding: 0 4px;
+  padding: 0 15px;
 }
 
 .progress-bar-container {
@@ -779,14 +788,16 @@ body,
 }
 
 .progress-label {
-  font-size: 0.75rem;
-  color: white;
+  font-size: 20px;
+  color: #18386B;
   margin-left: 8px;
+  font-weight: 500;
 }
 
 .moves {
-  font-size: 0.875rem;
-  color: white;
+  font-size: 20px;
+  color: #18386B;
+  font-weight: 500;
 }
 
 /* Responsive Card Size */

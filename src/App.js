@@ -1565,7 +1565,7 @@ function App() {
                 />
               </button>
 
-              <h2 className="game-title text-lg sm:text-2xl md:text-4xl font-bold text-black text-center">
+              <h2 className="text-lg sm:text-2xl md:text-4xl font-bold text-black text-center">
                 Letter Hunt
               </h2>
 

@@ -1,31 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Button } from './components/ui/button';
-import control from "./assets/images/remote-control.png"
-import frame from "./assets/images/Frame.png"
-import control1 from "./assets/images/alphabets.png"
+import { motion, useAnimation } from 'framer-motion';
+import control from "./assets/images/remote-control.png";
+import frame from "./assets/images/Frame.png";
+import control1 from "./assets/images/alphabets.png";
 
 const SplashScreen = ({ onComplete }) => {
-  console.log("SplashScreen is rendering!"); // Debug line
-  
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [bgMusic] = useState(new Audio());
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
+  const controlAnim = useAnimation();
+  const control1Anim = useAnimation();
+
   useEffect(() => {
-   
     const interval = setInterval(() => {
       setLoadingProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => onComplete(), 500); 
+          setTimeout(() => onComplete(), 1000);
           return 100;
         }
         return prev + 10;
       });
     }, 300);
 
-    // Configure background music
+    // Music setup
     bgMusic.src = 'https://assets.mixkit.co/active_storage/sfx/2284/2284-preview.mp3';
     bgMusic.loop = true;
     bgMusic.volume = 0.3;
@@ -35,95 +34,102 @@ const SplashScreen = ({ onComplete }) => {
       bgMusic.pause();
     };
   }, [bgMusic, onComplete]);
-// const [bgMusic] = useState(() => new Audio('https://assets.mixkit.co/active_storage/sfx/2284/2284-preview.mp3'));
 
-// useEffect(() => {
-//   bgMusic.loop = true;
-//   bgMusic.volume = 0.3;
-
-//   return () => {
-//     bgMusic.pause();
-//   };
-// }, [bgMusic]);
-
-const toggleMusic = () => {
-  if (isMusicPlaying) {
-    bgMusic.pause();
-  } else {
-    bgMusic.play().catch((e) => {
-      console.warn("Playback failed:", e);
-    });
-  }
-  setIsMusicPlaying(!isMusicPlaying);
-};
-
-
-
-
-
-
-
-
-return (
-  <motion.div
-    className="fixed inset-0 flex flex-col items-center bg-gradient-to-b from-purple-100 to-pink-100 py-10"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-  >
-    {/* Top: Remote Controls + Frame */}
-    <div className="flex flex-col items-center gap-6">
-      {/* Remote Controls with half-circle rotation */}
-      <motion.div
-        className="flex items-center justify-center gap-10"
-        animate={{
-          rotate: [20, -20, 20],  // half-circle swing rotation
-        }}
-        transition={{
+  useEffect(() => {
+    // Animate drop then rotate
+    controlAnim.start({
+      y: 0,
+      opacity: 1,
+      transition: { duration: 1.5, ease: "easeOut" },
+    }).then(() => {
+      controlAnim.start({
+        rotate: [20, -20, 20, -20, 0],
+        transition: {
           duration: 4,
           repeat: Infinity,
-          repeatType: "reverse",
           ease: "easeInOut",
+        },
+      });
+    });
+
+    control1Anim.start({
+      y: 0,
+      opacity: 1,
+      transition: { duration: 1.5, ease: "easeOut" },
+    }).then(() => {
+      control1Anim.start({
+        rotate: [-15, 15, -15, 15, 0],
+        transition: {
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+        },
+      });
+    });
+  }, []);
+
+  return (
+    <motion.div
+      className="fixed inset-0 flex flex-col items-center justify-center "
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      {/* Image Area */}
+      <div className="relative w-[400px] sm:w-[400px] md:w-[500px] h-[300px] sm:h-[300px] md:h-[400px] mb-10 sm:mb-20">
+        {/* Frame Image in background */}
+        <img
+          src={frame}
+          alt="Frame"
+          className="absolute top-1/2 left-1/2 w-full transform -translate-x-1/2 -translate-y-1/2 z-0"
+        />
+
+        {/* control - left top floating */}
+        <motion.img
+          src={control}
+          alt="Remote A"
+          className="absolute top-[3%] left-[80%] w-20 sm:w-28 md:w-35 z-10"
+          initial={{ y: -40, opacity: 0 }}
+          animate={controlAnim}
+        />
+
+        {/* control1 - right top floating */}
+        <motion.img
+          src={control1}
+          alt="Remote B"
+          className="absolute top-[30%] right-[70%] w-16 sm:w-24 md:w-30 z-10"
+          initial={{ y: -90, opacity: 0 }}
+          animate={control1Anim}
+        />
+      </div>
+
+      {/* Loading Text */}
+      <motion.div
+        className="text-4xl font-bold text-pink-500"
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1.1 }}
+        transition={{
+          duration: 0.6,
+          repeat: Infinity,
+          repeatType: "reverse",
         }}
       >
-        <img src={control} alt="Remote A"  />
-        <img src={control1} alt="Remote B"  />
+        {loadingProgress}%
       </motion.div>
 
-      {/* Frame Image below remotes */}
-      <img src={frame} alt="Frame Image" style={{width:"400px"}} />
-    </div>
-
-    {/* Loading Percentage */}
-    <motion.div
-      className="text-4xl font-bold text-pink-500"
-      initial={{ scale: 0.8 }}
-      animate={{ scale: 1 }}
-      transition={{
-        duration: 0.5,
-        repeat: Infinity,
-        repeatType: "reverse"
-      }}
-    >
-      {loadingProgress}%
+      {/* Progress Bar */}
+      <div className="w-full px-8 flex justify-center">
+        <div className="w-full md:w-1/2 h-4  rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-gradient-to-r from-blue-400 to-purple-400"
+            initial={{ width: '0%' }}
+            animate={{ width: `${loadingProgress}%` }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
+      </div>
     </motion.div>
-
-    {/* Loading Bar at bottom */}
-    <div className="w-full px-8 flex justify-center">
-  <div className="w-1/2 h-4 bg-gray-200 rounded-full overflow-hidden">
-    <motion.div
-      className="h-full bg-gradient-to-r from-blue-400 to-purple-400"
-      initial={{ width: '0%' }}
-      animate={{ width: `${loadingProgress}%` }}
-      transition={{ duration: 0.3 }}
-    />
-  </div>
-</div>
-
-  </motion.div>
-);
-
-
+  );
 };
 
 export default SplashScreen;

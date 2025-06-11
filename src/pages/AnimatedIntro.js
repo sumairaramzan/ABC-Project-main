@@ -1,170 +1,197 @@
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import character from "../assets/images/cartoon1.png";
-import nextButtonIcon from "../assets/images/arrowButtons.svg";
-
-const steps = [
-  "blank",
-  "abcEnter",
-  "kiddyEnter",
-  "logoEnter",
-  "yellowScreen",
-  "characterScreen",
-];
+import React, { useEffect, useState } from 'react';
+import { motion, useAnimation } from 'framer-motion';
+import nextButtonIcon from '../assets/images/arrowButtons.svg';
+import character from '../assets/images/cartoon1.png';
 
 const AnimatedIntro = ({ onStart }) => {
-  const [step, setStep] = useState(0);
-  const [abcAnimated, setAbcAnimated] = useState(false);
-  const [kiddyAnimated, setKiddyAnimated] = useState(false);
+  const abcControls = useAnimation();
+  const kiddyControls = useAnimation();
+  const starControls = useAnimation();
+  const bgControls = useAnimation();
+  const finalContentControls = useAnimation();
+
+  const [showFinal, setShowFinal] = useState(false);
+  const [hideInitialContent, setHideInitialContent] = useState(false);
 
   useEffect(() => {
-    let delay = 1000;
-    if (steps[step] === "yellowScreen") delay = 700;
+    const sequence = async () => {
+      // Step 1: Slide in texts
+      await Promise.all([
+        abcControls.start({
+          x: 0,
+          transition: { type: 'spring', stiffness: 80, damping: 20, duration: 2 },
+        }),
+        kiddyControls.start({
+          x: 0,
+          transition: { type: 'spring', stiffness: 80, damping: 20, duration: 2 },
+        }),
+      ]);
 
-    const timeout = setTimeout(() => {
-      if (step < steps.length - 1) {
-        setStep(step + 1);
-      }
-    }, delay);
+      // Step 2: Drop the star
+      await starControls.start({
+        y: 0,
+        transition: { type: 'spring', stiffness: 100, damping: 15 },
+      });
 
-    return () => clearTimeout(timeout);
-  }, [step]);
+      // Step 3: Star zoom + background color change
+      await Promise.all([
+        starControls.start({
+          scale: 30,
+          transition: { duration: 1.2, ease: 'easeInOut' },
+        }),
+        bgControls.start({
+          backgroundColor: '#FCD003',
+          transition: { duration: 1.2, ease: 'easeInOut' },
+        }),
+      ]);
+
+      // Step 4: Small delay, then show final content
+      setTimeout(() => {
+        setHideInitialContent(true); // hide everything behind the star
+        setShowFinal(true);          // render the new screen
+      }, 500); // enough delay for zoom to visually finish
+    };
+
+    sequence();
+  }, []);
+
+  useEffect(() => {
+    if (showFinal) {
+      finalContentControls.start({
+        x: 0,
+        opacity: 1,
+        transition: { type: 'tween', duration: 0.8 },
+      });
+    }
+  }, [showFinal]);
 
   return (
-    <AnimatePresence>
-      <motion.div
-        key={steps[step]}
-        className={`fixed inset-0 flex items-center justify-center transition-colors duration-500 ${
-          ["yellowScreen", "characterScreen"].includes(steps[step])
-            ? "bg-yellow-400"
-            : "bg-white"
-        }`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        {/* ABC & Kiddy */}
-        {step >= 1 && step < 4 && (
-          <div className="flex items-center justify-center gap-4">
-            <motion.h1
-              className="text-4xl font-bold text-pink-500"
-              initial={
-                !abcAnimated && step === 1 ? { x: "-100vw", opacity: 0 } : false
-              }
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ type: "tween", duration: 0.6 }}
-              onAnimationComplete={() => setAbcAnimated(true)}
+    <motion.div
+      initial={{ backgroundColor: '#ffffff' }}
+      animate={bgControls}
+      style={{
+        position: 'relative',
+        width: '100vw',
+        height: '100vh',
+        overflow: 'hidden',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      {/* ABC and Kiddy text */}
+      {!hideInitialContent && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            display: 'flex',
+            gap: '2rem',
+            fontSize: '3rem',
+            fontWeight: 'bold',
+          }}
+        >
+          <motion.div
+            style={{ color: '#DA4B91' }}
+            initial={{ x: '-100vw' }}
+            animate={abcControls}
+          >
+            ABC
+          </motion.div>
+          <motion.div
+            style={{ color: '#DA4B91' }}
+            initial={{ x: '200vw' }}
+            animate={kiddyControls}
+          >
+            Kiddy
+          </motion.div>
+        </div>
+      )}
+
+      {/* Star that zooms in */}
+      {!hideInitialContent && (
+        <motion.div
+          initial={{ y: '-100vh', scale: 1 }}
+          animate={starControls}
+          style={{
+            position: 'absolute',
+            top: '30%',
+            left: '47%',
+            transform: 'translateX(-47%)',
+            fontSize: '5rem',
+            color: '#FED501',
+            zIndex: 10,
+          }}
+        >
+          ⭐
+        </motion.div>
+      )}
+
+      {/* Final content after splash */}
+      {showFinal && (
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 w-full h-full px-2 md:px-10 absolute top-0 left-0"
+          initial={{ x: '100vw', opacity: 0 }}
+          animate={finalContentControls}
+          exit={{ x: '-100vw', opacity: 0 }}
+        >
+          {/* Left content */}
+          <div className="py-8 md:py-0 px-2 md:px-6">
+            <div
+              className="text-black mb-4 md:mb-6"
+              style={{
+                fontSize: 'clamp(32px, 5vw, 90px)',
+                lineHeight: '1.1',
+                fontWeight: '500',
+                fontFamily: 'sans-serif',
+                marginTop: '60px',
+              }}
             >
-              ABC
-            </motion.h1>
-
-            {step >= 2 && (
-              <motion.h1
-                className="text-4xl font-bold text-pink-500"
-                initial={
-                  !kiddyAnimated && step === 2
-                    ? { x: "100vw", opacity: 0 }
-                    : false
-                }
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ type: "tween", duration: 0.6 }}
-                onAnimationComplete={() => setKiddyAnimated(true)}
-              >
-                Kiddy
-              </motion.h1>
-            )}
-          </div>
-        )}
-
-        {/* Star Logo */}
-        {steps[step] === "logoEnter" && (
-          <motion.div
-            className="fixed inset-0 flex items-center justify-center bg-yellow-400"
-            initial={{ scale: 0.2, opacity: 0 }}
-            animate={{ scale: 10, opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-          >
-            <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white">
-              🌟
-            </div>
-          </motion.div>
-        )}
-
-        {/* Yellow Screen */}
-        {steps[step] === "yellowScreen" && (
-          <motion.div
-            className="text-yellow-600 text-xl"
-            initial={{ scale: 3, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          ></motion.div>
-        )}
-
-        {/* Character Screen */}
-        {steps[step] === "characterScreen" && (
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 w-full h-full px-2 md:px-10 absolute top-0 left-0"
-            initial={{ x: "100vw", opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "-100vw", opacity: 0 }}
-            transition={{ type: "tween", duration: 0.8 }}
-          >
-            <div className=" py-8 md:py-0 px-2 md:px-6">
-              <div
-                className="text-black mb-4 md:mb-6"
-                style={{
-                  fontSize: "clamp(32px, 5vw, 90px)",
-                  lineHeight: "1.1",
-                  fontWeight: "500",
-                  fontFamily: "sans-serif",
-                  marginTop:"60px",
-                }}
-              >
-                <div>Where Letters</div>
-                <div>Become Playful</div>
-                <div>Adventures!</div>
-              </div>
-              <div
-                className="text-black mb-6 md:mb-8"
-                style={{
-                  fontSize: "clamp(16px, 2.5vw, 34px)",
-                  fontWeight: "400",
-                  lineHeight: "1.4",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                Discover fun games, giggles, and alphabet magic—
-                <br className="hidden sm:block" />
-                designed for little explorers!
-              </div>
-             <button
-  onClick={onStart}
-  className="flex items-center justify-center gap-3 px-4 py-2 md:px-6 md:py-3 bg-blue-600 text-white rounded-lg shadow-md w-[180px] h-[60px] md:w-[216px] md:h-[80px] text-sm md:text-lg font-medium mb-3"
-  style={{
-    fontFamily: "sans-serif",
-  }}
->
-  Let's Go!
-  <img
-    src={nextButtonIcon}
-    alt="icon"
-    className="w-4 h-4 md:w-6 md:h-6 "
-  />
-</button>
-
+              <div>Where Letters</div>
+              <div>Become Playful</div>
+              <div>Adventures!</div>
             </div>
 
-            <div className="flex items-end justify-center mt-6 md:mt-0">
+            <div
+              className="text-black mb-6 md:mb-8"
+              style={{
+                fontSize: 'clamp(16px, 2.5vw, 34px)',
+                fontWeight: '400',
+                lineHeight: '1.4',
+                fontFamily: 'sans-serif',
+              }}
+            >
+              Discover fun games, giggles, and alphabet magic—<br className="hidden sm:block" />
+              designed for little explorers!
+            </div>
+
+            <button
+              onClick={onStart}
+              className="flex items-center justify-center gap-3 px-4 py-2 md:px-6 md:py-3 bg-blue-600 text-white rounded-lg shadow-md w-[180px] h-[60px] md:w-[216px] md:h-[80px] text-sm md:text-lg font-medium mb-3"
+              style={{ fontFamily: 'sans-serif' }}
+            >
+              Let's Go!
               <img
-                src={character}
-                alt="character"
-                className="max-w-full h-auto"
+                src={nextButtonIcon}
+                alt="icon"
+                className="w-4 h-4 md:w-6 md:h-6"
               />
-            </div>
-          </motion.div>
-        )}
-      </motion.div>
-    </AnimatePresence>
+            </button>
+          </div>
+
+          {/* Right character image */}
+          <div className="flex items-end justify-center mt-6 md:mt-0">
+            <img
+              src={character}
+              alt="character"
+              className="max-w-full h-auto"
+            />
+          </div>
+        </motion.div>
+      )}
+    </motion.div>
   );
 };
 
