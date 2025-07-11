@@ -8,6 +8,9 @@ import BackIcon from "../assets/images/back.svg";
 const ChooseGame = ({ goBack, selectedAvatar, setCurrentGame, setIsAvatarUpdate, setCurrentScreen }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+
+
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -87,17 +90,25 @@ const ChooseGame = ({ goBack, selectedAvatar, setCurrentGame, setIsAvatarUpdate,
   };
 
   return (
+    <>
+   
     <div style={styles.body}>
       {selectedAvatar && (
+        // <img
+        //   src={selectedAvatar}
+        //   alt="User Avatar"
+        //   className="user-avatar2"
+        //   onClick={() => {
+        //     setIsAvatarUpdate(true);
+        //     setCurrentScreen("selectCharacter");
+        //   }}
+        // />
         <img
-          src={selectedAvatar}
-          alt="User Avatar"
-          className="user-avatar2"
-          onClick={() => {
-            setIsAvatarUpdate(true);
-            setCurrentScreen("selectCharacter");
-          }}
-        />
+  src={selectedAvatar}
+  alt="User Avatar"
+  className="user-avatar2 cursor-pointer"
+  onClick={() => setShowSettingsModal(true)}
+/>
       )}
       <div onClick={goBack} style={styles.backArrow}>
         <img src={BackIcon} alt="Back" />
@@ -127,6 +138,60 @@ const ChooseGame = ({ goBack, selectedAvatar, setCurrentGame, setIsAvatarUpdate,
         </div>
       </div>
     </div>
+    {showSettingsModal && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-gradient-to-b from-[#3B82F6] to-[#1E3A8A] p-1 rounded-xl w-[320px] shadow-xl">
+          <div className="bg-[#f0f4ff] rounded-lg p-4 relative">
+    
+            {/* Close icon */}
+            <button
+              className="absolute top-3 right-3 text-black font-bold text-lg"
+              onClick={() => setShowSettingsModal(false)}
+            >
+              ×
+            </button>
+    
+            {/* Avatar */}
+            <div className="flex justify-center mb-4">
+              <img
+                src={selectedAvatar}
+                alt="avatar"
+                className="w-20 h-20 rounded-full border-4 border-white shadow-md cursor-pointer"
+                onClick={() => {
+                  setIsAvatarUpdate(true);
+                  setCurrentScreen("selectCharacter");
+                  setShowSettingsModal(false);
+                }}
+              />
+            </div>
+    
+            {/* Settings buttons */}
+            <div className="flex flex-col gap-2">
+              <button className="bg-[#FCD34D] rounded-md px-4 py-2 text-left font-medium flex items-center gap-2">
+                <span>👤</span> Jhon Smith
+              </button>
+              <button className="bg-[#FCD34D] rounded-md px-4 py-2 text-left font-medium flex items-center gap-2">
+                <span>📦</span> Subscription Plan
+              </button>
+              <button className="bg-[#FCD34D] rounded-md px-4 py-2 text-left font-medium flex items-center gap-2">
+                <span>📜</span> Privacy Policy
+              </button>
+              <button className="bg-[#FCD34D] rounded-md px-4 py-2 text-left font-medium flex items-center gap-2">
+                <span>ℹ️</span> About Us
+              </button>
+              <button className="bg-[#EF4444] text-white rounded-md px-4 py-2 text-left font-medium flex items-center gap-2">
+                <span>🗑️</span> Delete Account
+              </button>
+              <button className="bg-[#FCD34D] rounded-md px-4 py-2 text-left font-medium flex items-center gap-2">
+                <span>🚪</span> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+     </>
+    
   );
 };
 

@@ -7,6 +7,8 @@ import Joyride from "react-joyride";
 import { Card } from "./components/ui/card";
 import { Button } from "./components/ui/button";
 import { motion } from "framer-motion";
+import feature_icon from "./assets/images/Featured_icon.svg"
+import close_img from "./assets/images/x-close.svg"
 import Confetti from "react-confetti";
 import HomeScreen from "./HomeScreen";
 import SplashScreen from "./SplashScreen";
@@ -48,6 +50,8 @@ import xletter from "./assets/Alphabet-icons/x.svg";
 import yletter from "./assets/Alphabet-icons/y.svg";
 import zletter from "./assets/Alphabet-icons/z.svg";
 import bgImage from "./assets/images/backgroundImages.png";
+import loginLogo from "./assets/images/login-logo.svg";
+import loginBg from "./assets/images/login-bgImg.png";
 import letterhunt from "./assets/images/letterhuntbgImg.png";
 import dAnimal from "./assets/animal_icons/d.svg";
 import zAnimal from "./assets/animal_icons/z.svg";
@@ -406,10 +410,23 @@ const alphabetData = [
 ];
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState("selectCharacter");
+  const [currentScreen, setCurrentScreen] = useState("login");
   const [previousScreen, setPreviousScreen] = useState(null);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [isAvatarUpdate, setIsAvatarUpdate] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+const handleSignup = (e) => {
+  e.preventDefault();
+  // validate form...
+  setShowModal(true);
+};
+
+const handleClose = () => setShowModal(false);
+const handleConfirm = () => {
+  setShowModal(false);
+  setCurrentScreen("selectCharacter"); // or wherever you want to go next
+};
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -707,11 +724,11 @@ function App() {
             <div className="content-row">
               <div className="letter-box">
                 <img
-                 onClick={() => {
-                  if (!isSpeaking && soundEnabled) {
-                    playSound(currentLetter.char, currentLetter.name);
-                  }
-                }}
+                  onClick={() => {
+                    if (!isSpeaking && soundEnabled) {
+                      playSound(currentLetter.char, currentLetter.name);
+                    }
+                  }}
                   src={currentLetter.letter}
                   alt="Letter"
                   className="image-fit"
@@ -1779,17 +1796,333 @@ function App() {
       </div>
     </div>
   );
+  const LoginScreen = () => (
+    <div
+      className="w-screen h-screen flex items-center justify-center"
+      style={{
+        backgroundImage: `url(${loginBg})`,
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="bg-white p-10 rounded-xl shadow-md w-full max-w-md bg-color" >
+        {/* Logo + Title */}
+        <div className="flex flex-col items-center mb-6">
+          <img src={loginLogo} alt="Logo" className="mb-2" />
+        </div>
+
+        {/* Heading */}
+        <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-6">
+          Sign in your account
+        </h2>
+
+        <form className="space-y-4">
+          {/* Email Field */}
+          <div>
+            <label className="block text-[#344054] text-[14px] font-medium mb-1">
+              Email*
+            </label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+            />
+          </div>
+
+          {/* Password Field */}
+          <div>
+            <label className="block text-[#344054] text-[14px] font-medium mb-1">
+              Password*
+            </label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+            />
+            <div className="text-right mt-1">
+              <a
+                href="#"
+                className="text-[#295FB5] text-[14px] font-medium hover:underline"
+                onClick={() => setCurrentScreen("forgot")}
+              >
+                Forgot password
+              </a>
+            </div>
+          </div>
+
+          {/* Sign In Button */}
+          <button
+            type="submit"
+            className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
+          >
+            Sign in
+          </button>
+        </form>
+
+        {/* Footer Text */}
+        <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
+          Didn't have an account?{" "}
+          <a
+            href="#"
+            className="text-[#295FB5] text-[14px] font-medium hover:underline"
+            onClick={() => setCurrentScreen("signup")}
+          >
+            Sign up
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+  const SignupSuccessModal = ({ onClose, onConfirm }) => {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div className="bg-white rounded-xl w-full max-w-md shadow-lg relative">
+          {/* Top section with image and close icon */}
+          <div className="flex items-start justify-between p-4">
+            <img
+              src={feature_icon} // Replace with your icon/image
+              alt="Success Icon"
+            
+            />
+  
+            <button
+              className="text-gray-500 hover:text-gray-700"
+              onClick={onClose}
+            >
+               <img
+              src={close_img} // Replace with your icon/image
+              alt="Success Icon"
+              className="w-10 h-10"
+            />
+              
+            </button>
+          </div>
+  
+          {/* Content */}
+          <div className="px-6 pb-6">
+            <h3 className="text-[#101828] text-[18px] font-semibold mb-2 text-left">
+              Signup Successful!
+            </h3>
+            <p className="text-[#475467] text-[14px] font-normal mb-6 text-left">
+              Welcome onboard! Your account has been created successfully. You can
+              now start exploring and playing!
+            </p>
+  
+            <button
+              onClick={onConfirm}
+              className="w-full bg-[#3A86FF] text-white text-[16px] font-semibold py-2 rounded-md hover:bg-blue-600 transition"
+            >
+              Let’s Go
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  const SignupScreen = () => (
+    <div
+      className="w-screen h-screen flex items-center justify-center"
+      style={{
+        backgroundImage: `url(${loginBg})`,
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="bg-white bg-opacity-80 p-10 rounded-xl shadow-md w-full max-w-md">
+        {/* Logo + Title */}
+        <div className="flex flex-col items-center mb-6">
+          <img src={loginLogo} alt="Logo" className="mb-2" />
+        </div>
+
+        {/* Heading */}
+        <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-6">
+          Create an account
+        </h2>
+
+        <form className="space-y-4" onSubmit={handleSignup}>
+          {/* Name */}
+          <div>
+            <label className="block text-[#344054] text-[14px] font-medium mb-1">
+              Name*
+            </label>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-[#344054] text-[14px] font-medium mb-1">
+              Email*
+            </label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-[#344054] text-[14px] font-medium mb-1">
+              Password*
+            </label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+            />
+          </div>
+
+          {/* Conditions */}
+          <div className="d-flex flex-column gap-2">
+            {/* Checkbox 1 */}
+            <div className="d-flex align-items-center justify-center gap-2">
+              <input
+                type="checkbox"
+                className="custom-check"
+                id="requirement1"
+              />
+              <label
+                htmlFor="requirement1"
+                style={{
+                  color: "#344054",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  marginBottom: 0,
+                }}
+              >
+                Must be at least 8 characters
+              </label>
+            </div>
+
+            {/* Checkbox 2 */}
+            <div className="d-flex align-items-center gap-2">
+              <input
+                type="checkbox"
+                className="custom-check"
+                id="requirement2"
+              />
+              <label
+                htmlFor="requirement2"
+                style={{
+                  color: "#344054",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  marginBottom: 0,
+                }}
+              >
+                Must contain one special character
+              </label>
+            </div>
+          </div>
+
+          {/* Button */}
+          <button
+            type="submit"
+            className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
+          >
+            Get started
+          </button>
+        </form>
+        {showModal && (
+  <SignupSuccessModal onClose={handleClose} onConfirm={handleConfirm} />
+)}
+
+        {/* Footer */}
+        <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
+          Already have an account?{" "}
+          <a
+            href="#"
+            className="text-[#295FB5] text-[14px] font-medium hover:underline"
+            onClick={() => setCurrentScreen("login")}
+          >
+            Log in
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+  const ForgotPasswordScreen = ({ setCurrentScreen }) => (
+    <div
+      className="w-screen h-screen flex items-center justify-center"
+      style={{
+        backgroundImage: `url(${loginBg})`,
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="bg-white bg-opacity-80 p-10 rounded-xl shadow-md w-full max-w-md">
+        {/* Logo */}
+        <div className="flex flex-col items-center mb-6">
+          <img src={loginLogo} alt="Logo" className="mb-2" />
+        </div>
+  
+        {/* Heading */}
+        <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-2" onClick={() => setCurrentScreen("forgot")}>
+          Forgot Password?
+        </h2>
+  
+        {/* Subheading */}
+        <p className="text-[#475467] text-[14px] font-normal text-center mb-6">
+          We'll send you a link to create a new password.
+        </p>
+  
+        <form className="space-y-4">
+          {/* Email Field */}
+          <div>
+            <label className="block text-[#344054] text-[14px] font-medium mb-1">
+              Email*
+            </label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+            />
+          </div>
+  
+          {/* Send Code Button */}
+          <button
+            type="submit"
+            className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
+          >
+            Send code
+          </button>
+        </form>
+  
+        {/* Footer */}
+        <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
+          Already have an account?{" "}
+          <a
+            href="#"
+            className="text-[#295FB5] text-[14px] font-medium hover:underline"
+            onClick={() => setCurrentScreen("login")}
+          >
+            Log in
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+  
 
   // Screen rendering logic
   const renderScreen = () => {
     switch (currentScreen) {
       case "selectCharacter":
         return (
+         
+
           <SelectCharacter
             setCurrentScreen={handleScreenChange}
             setSelectedAvatar={setSelectedAvatar}
             selectedAvatar={selectedAvatar}
-            isAvatarUpdate={isAvatarUpdate} // ✅ pass correctly
+            isAvatarUpdate={isAvatarUpdate}
             setIsAvatarUpdate={setIsAvatarUpdate}
           />
         );
@@ -1827,6 +2160,13 @@ function App() {
         );
       case "progress":
         return <ProgressScreen />;
+        case "login":
+          return <LoginScreen setCurrentScreen={handleScreenChange}  />;
+
+      case "signup":
+        return <SignupScreen setCurrentScreen={handleScreenChange} />;
+        case "forgot":
+          return <ForgotPasswordScreen setCurrentScreen={setCurrentScreen} />;
       // default:
       //   return <HomeScreen setCurrentScreen={handleScreenChange}  goBack={() => setCurrentScreen("selectCharacter")} />;
     }
