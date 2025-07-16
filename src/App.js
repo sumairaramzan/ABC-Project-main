@@ -7,8 +7,8 @@ import Joyride from "react-joyride";
 import { Card } from "./components/ui/card";
 import { Button } from "./components/ui/button";
 import { motion } from "framer-motion";
-import feature_icon from "./assets/images/Featured_icon.svg"
-import close_img from "./assets/images/x-close.svg"
+import feature_icon from "./assets/images/Featured_icon.svg";
+import close_img from "./assets/images/x-close.svg";
 import Confetti from "react-confetti";
 import HomeScreen from "./HomeScreen";
 import SplashScreen from "./SplashScreen";
@@ -116,7 +116,6 @@ import fish from "./assets/singleAnimals/fish.svg";
 import giraffe from "./assets/singleAnimals/giraffe.svg";
 import hat from "./assets/singleAnimals/hat.svg";
 import icecream from "./assets/singleAnimals/icecream.svg";
-
 import juice from "./assets/singleAnimals/juice.svg";
 import koala from "./assets/singleAnimals/koala.svg";
 import lion from "./assets/singleAnimals/lion.svg";
@@ -408,25 +407,593 @@ const alphabetData = [
     singleAnimal: zebra,
   },
 ];
+const SignupSuccessModal = ({ onClose, onConfirm }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl w-full max-w-md shadow-lg relative">
+        {/* Top section with image and close icon */}
+        <div className="flex items-start justify-between p-4">
+          <img
+            src={feature_icon} // Replace with your icon/image
+            alt="Success Icon"
+          />
+
+          <button
+            className="text-gray-500 hover:text-gray-700"
+            onClick={onClose}
+          >
+            <img
+              src={close_img} // Replace with your icon/image
+              alt="Success Icon"
+              className="w-10 h-10"
+            />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="px-6 pb-6">
+          <h3 className="text-[#101828] text-[18px] font-semibold mb-2 text-left">
+            Signup Successful!
+          </h3>
+          <p className="text-[#475467] text-[14px] font-normal mb-6 text-left">
+            Welcome onboard! Your account has been created successfully. You can
+            now start exploring and playing!
+          </p>
+
+          <button
+            onClick={onConfirm}
+            className="w-full bg-[#3A86FF] text-white text-[16px] font-semibold py-2 rounded-md hover:bg-blue-600 transition"
+          >
+            Let’s Go
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SignupScreen = ({
+  error,
+  name,
+  setName,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  handleSignup,
+  showModal,
+  handleClose,
+  handleConfirm,
+  setCurrentScreen,
+  hasSpecialChar,
+  isLengthValid,
+}) => (
+  <div
+    className="w-screen h-screen flex items-center justify-center"
+    style={{
+      backgroundImage: `url(${loginBg})`,
+      backgroundSize: "100% 100%",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+    }}
+  >
+    <div className="bg-white bg-opacity-80 p-10 rounded-xl shadow-md w-full max-w-md">
+      {/* Logo + Title */}
+      <div className="flex flex-col items-center mb-6">
+        <img src={loginLogo} alt="Logo" className="mb-2" />
+      </div>
+
+      {/* Heading */}
+      <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-6">
+        Create an account
+      </h2>
+
+      <form className="space-y-4" onSubmit={handleSignup}>
+        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+        {/* Name */}
+        <div>
+          <label className="block text-[#344054] text-[14px] font-medium mb-1">
+            Name*
+          </label>
+          <input
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            type="text"
+            placeholder="Enter your name"
+            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+          />
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-[#344054] text-[14px] font-medium mb-1">
+            Email*
+          </label>
+          <input
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            placeholder="Enter your email"
+            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+          />
+        </div>
+
+        {/* Password */}
+        <div>
+          <label className="block text-[#344054] text-[14px] font-medium mb-1">
+            Password*
+          </label>
+          <input
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Enter your password"
+            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+          />
+        </div>
+
+        <div className="d-flex flex-column gap-3">
+          {/* Checkbox 1 */}
+          <div className="d-flex align-items-center">
+            <input
+              type="checkbox"
+              className="custom-check"
+              id="requirement1"
+              checked={isLengthValid}
+              readOnly
+            />
+            <label htmlFor="requirement1" className="custom-check-label">
+              Must be at least 8 characters
+            </label>
+          </div>
+
+          {/* Checkbox 2 */}
+          <div className="d-flex align-items-center">
+            <input
+              type="checkbox"
+              className="custom-check"
+              id="requirement2"
+              checked={hasSpecialChar}
+              readOnly
+            />
+            <label htmlFor="requirement2" className="custom-check-label">
+              Must contain one special character
+            </label>
+          </div>
+        </div>
+
+        {/* Button */}
+        <button
+          type="submit"
+          className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
+        >
+          Get started
+        </button>
+      </form>
+      {showModal && (
+        <SignupSuccessModal onClose={handleClose} onConfirm={handleConfirm} />
+      )}
+
+      {/* Footer */}
+      <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
+        Already have an account?{" "}
+        <a
+          href="#"
+          className="text-[#295FB5] text-[14px] font-medium hover:underline"
+          onClick={() => setCurrentScreen("login")}
+        >
+          Log in
+        </a>
+      </p>
+    </div>
+  </div>
+);
+const LoginScreen = ({
+  error,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  handleLogin,
+  setCurrentScreen,
+}) => (
+  <div
+    className="w-screen h-screen flex items-center justify-center"
+    style={{
+      backgroundImage: `url(${loginBg})`,
+      backgroundSize: "100% 100%",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+    }}
+  >
+    <div className="bg-white p-10 rounded-xl shadow-md w-full max-w-md bg-color">
+      {/* Logo + Title */}
+      <div className="flex flex-col items-center mb-6">
+        <img src={loginLogo} alt="Logo" className="mb-2" />
+      </div>
+
+      <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-6">
+        Sign in to your account
+      </h2>
+
+      <form className="space-y-4" onSubmit={handleLogin}>
+        {error && (
+          <p className="text-red-600 text-sm mb-2 text-center">{error}</p>
+        )}
+        {/* Email Field */}
+        <div>
+          <label className="block text-[#344054] text-[14px] font-medium mb-1">
+            Email*
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+          />
+        </div>
+
+        {/* Password Field */}
+        <div>
+          <label className="block text-[#344054] text-[14px] font-medium mb-1">
+            Password*
+          </label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+          />
+          <div className="text-right mt-1">
+            <a
+              href="#"
+              className="text-[#295FB5] text-[14px] font-medium hover:underline"
+              onClick={() => setCurrentScreen("forgot")}
+            >
+              Forgot password
+            </a>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
+        >
+          Sign in
+        </button>
+      </form>
+
+      <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
+        Don't have an account?{" "}
+        <a
+          href="#"
+          className="text-[#295FB5] text-[14px] font-medium hover:underline"
+          onClick={() => setCurrentScreen("signup")}
+        >
+          Sign up
+        </a>
+      </p>
+    </div>
+  </div>
+);
+const ResetPasswordScreen = ({
+  token,
+  setCurrentScreen,
+  password,
+  setPassword,
+  message,
+  setMessage,
+  error,
+  setError,
+  handleReset,
+}) => (
+  <div
+    className="w-screen h-screen flex items-center justify-center"
+    style={{
+      backgroundImage: `url(${loginBg})`,
+      backgroundSize: "100% 100%",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+    }}
+  >
+    <form
+      onSubmit={handleReset}
+      className="bg-white p-8 rounded shadow-md w-full max-w-md"
+    >
+      <h2 className="text-xl font-bold mb-4">Reset Your Password</h2>
+
+      <input
+        type="password"
+        placeholder="Enter new password"
+        className="w-full px-4 py-2 mb-4 border rounded"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2 rounded"
+      >
+        Reset Password
+      </button>
+
+      {message && <p className="text-green-600 mt-4">{message}</p>}
+      {error && <p className="text-red-600 mt-4">{error}</p>}
+    </form>
+  </div>
+);
+const ForgotPasswordScreen = ({
+  setCurrentScreen,
+  email,
+  setEmail,
+  message,
+  setMessage,
+  error,
+  setError,
+  handleForgotPassword,
+  setResetToken,
+}) => (
+  <div
+    className="w-screen h-screen flex items-center justify-center"
+    style={{
+      backgroundImage: `url(${loginBg})`,
+      backgroundSize: "100% 100%",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+    }}
+  >
+    <div className="bg-white bg-opacity-80 p-10 rounded-xl shadow-md w-full max-w-md">
+      {/* Logo */}
+      <div className="flex flex-col items-center mb-6">
+        <img src={loginLogo} alt="Logo" className="mb-2" />
+      </div>
+
+      {/* Heading */}
+      <h2
+        className="text-[#101828] text-[24px] font-semibold text-center mb-2"
+        onClick={() => setCurrentScreen("forgot")}
+      >
+        Forgot Password?
+      </h2>
+
+      {/* Subheading */}
+      <p className="text-[#475467] text-[14px] font-normal text-center mb-6">
+        We'll send you a link to create a new password.
+      </p>
+
+      <form className="space-y-4" onSubmit={handleForgotPassword}>
+        <div>
+          <label className="block text-[#344054] text-[14px] font-medium mb-1">
+            Email*
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            required
+            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
+        >
+          Send code
+        </button>
+
+        {message && <p className="text-green-600 text-sm mt-2">{message}</p>}
+        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+      </form>
+
+      {/* Footer */}
+      <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
+        Already have an account?{" "}
+        <a
+          href="#"
+          className="text-[#295FB5] text-[14px] font-medium hover:underline"
+          onClick={() => setCurrentScreen("login")}
+        >
+          Log in
+        </a>
+      </p>
+    </div>
+  </div>
+);
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState("login");
+  const [resetToken, setResetToken] = useState("");
   const [previousScreen, setPreviousScreen] = useState(null);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [isAvatarUpdate, setIsAvatarUpdate] = useState(false);
+  const [message, setMessage] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isLengthValid, setIsLengthValid] = useState(false);
+  const [hasSpecialChar, setHasSpecialChar] = useState(false);
 
-const handleSignup = (e) => {
-  e.preventDefault();
-  // validate form...
-  setShowModal(true);
-};
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-const handleClose = () => setShowModal(false);
-const handleConfirm = () => {
-  setShowModal(false);
-  setCurrentScreen("selectCharacter"); // or wherever you want to go next
-};
+    if (token) {
+      // Optionally verify token with backend
+      setCurrentScreen("selectCharacter"); // or your main/home/dashboard screen
+    }
+  }, []);
+
+  useEffect(() => {
+    setIsLengthValid(password.length >= 8);
+    setHasSpecialChar(/[^A-Za-z0-9]/.test(password)); // checks for special characters
+  }, [password]);
+
+  const handleReset = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/auth/reset-password/${resetToken}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) return setError(data.msg || "Reset failed");
+
+      setMessage("Password reset successful!");
+      // Optionally navigate back to login screen
+      setTimeout(() => setCurrentScreen("login"), 2000);
+    } catch (err) {
+      setError("Something went wrong");
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+
+    try {
+      const res = await fetch(
+        "http://localhost:5000/api/auth/forgot-password",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.msg || "Something went wrong");
+        return;
+      }
+
+      setMessage("Reset link sent! Redirecting...");
+      console.log("Reset URL:", data.resetUrl);
+
+      // ✅ Step 1: extract token from resetUrl
+      const urlParts = data.resetUrl.split("/");
+      const token = urlParts[urlParts.length - 1];
+      setResetToken(token); // Update your `resetToken` state
+
+      // ✅ Step 2: navigate to resetPassword screen
+      setTimeout(() => {
+        setCurrentScreen("resetPassword");
+      }, 1000);
+    } catch (err) {
+      setError("Server error, please try again.");
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    // ✅ Frontend validation
+    if (!email || !password) {
+      setError("Email and password are required.");
+      return;
+    }
+
+    // ✅ Basic email format check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Enter a valid email address.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.msg || "Login failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      console.log("Login successful:", data);
+      localStorage.setItem("token", data.token);
+      setCurrentScreen("selectCharacter");
+    } catch (err) {
+      setError("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    // Basic frontend validation
+    if (!name || !email || !password) {
+      setError("All fields are required.");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }), // ✅ Include `name` here!
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.msg || "Signup failed.");
+        setLoading(false);
+        return;
+      }
+
+      console.log("Signup successful:", data);
+      setShowModal(true);
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // const handleSignup = (e) => {
+  //   e.preventDefault();
+  //   setShowModal(true);
+  // };
+
+  const handleClose = () => setShowModal(false);
+  const handleConfirm = () => {
+    setShowModal(false);
+    setCurrentScreen("login"); // or wherever you want to go next
+  };
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -1796,328 +2363,12 @@ const handleConfirm = () => {
       </div>
     </div>
   );
-  const LoginScreen = () => (
-    <div
-      className="w-screen h-screen flex items-center justify-center"
-      style={{
-        backgroundImage: `url(${loginBg})`,
-        backgroundSize: "100% 100%",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="bg-white p-10 rounded-xl shadow-md w-full max-w-md bg-color" >
-        {/* Logo + Title */}
-        <div className="flex flex-col items-center mb-6">
-          <img src={loginLogo} alt="Logo" className="mb-2" />
-        </div>
-
-        {/* Heading */}
-        <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-6">
-          Sign in your account
-        </h2>
-
-        <form className="space-y-4">
-          {/* Email Field */}
-          <div>
-            <label className="block text-[#344054] text-[14px] font-medium mb-1">
-              Email*
-            </label>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-            />
-          </div>
-
-          {/* Password Field */}
-          <div>
-            <label className="block text-[#344054] text-[14px] font-medium mb-1">
-              Password*
-            </label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-            />
-            <div className="text-right mt-1">
-              <a
-                href="#"
-                className="text-[#295FB5] text-[14px] font-medium hover:underline"
-                onClick={() => setCurrentScreen("forgot")}
-              >
-                Forgot password
-              </a>
-            </div>
-          </div>
-
-          {/* Sign In Button */}
-          <button
-            type="submit"
-            className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
-          >
-            Sign in
-          </button>
-        </form>
-
-        {/* Footer Text */}
-        <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
-          Didn't have an account?{" "}
-          <a
-            href="#"
-            className="text-[#295FB5] text-[14px] font-medium hover:underline"
-            onClick={() => setCurrentScreen("signup")}
-          >
-            Sign up
-          </a>
-        </p>
-      </div>
-    </div>
-  );
-  const SignupSuccessModal = ({ onClose, onConfirm }) => {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-        <div className="bg-white rounded-xl w-full max-w-md shadow-lg relative">
-          {/* Top section with image and close icon */}
-          <div className="flex items-start justify-between p-4">
-            <img
-              src={feature_icon} // Replace with your icon/image
-              alt="Success Icon"
-            
-            />
-  
-            <button
-              className="text-gray-500 hover:text-gray-700"
-              onClick={onClose}
-            >
-               <img
-              src={close_img} // Replace with your icon/image
-              alt="Success Icon"
-              className="w-10 h-10"
-            />
-              
-            </button>
-          </div>
-  
-          {/* Content */}
-          <div className="px-6 pb-6">
-            <h3 className="text-[#101828] text-[18px] font-semibold mb-2 text-left">
-              Signup Successful!
-            </h3>
-            <p className="text-[#475467] text-[14px] font-normal mb-6 text-left">
-              Welcome onboard! Your account has been created successfully. You can
-              now start exploring and playing!
-            </p>
-  
-            <button
-              onClick={onConfirm}
-              className="w-full bg-[#3A86FF] text-white text-[16px] font-semibold py-2 rounded-md hover:bg-blue-600 transition"
-            >
-              Let’s Go
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-  const SignupScreen = () => (
-    <div
-      className="w-screen h-screen flex items-center justify-center"
-      style={{
-        backgroundImage: `url(${loginBg})`,
-        backgroundSize: "100% 100%",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="bg-white bg-opacity-80 p-10 rounded-xl shadow-md w-full max-w-md">
-        {/* Logo + Title */}
-        <div className="flex flex-col items-center mb-6">
-          <img src={loginLogo} alt="Logo" className="mb-2" />
-        </div>
-
-        {/* Heading */}
-        <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-6">
-          Create an account
-        </h2>
-
-        <form className="space-y-4" onSubmit={handleSignup}>
-          {/* Name */}
-          <div>
-            <label className="block text-[#344054] text-[14px] font-medium mb-1">
-              Name*
-            </label>
-            <input
-              type="text"
-              placeholder="Enter your name"
-              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="block text-[#344054] text-[14px] font-medium mb-1">
-              Email*
-            </label>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-            />
-          </div>
-
-          {/* Password */}
-          <div>
-            <label className="block text-[#344054] text-[14px] font-medium mb-1">
-              Password*
-            </label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-            />
-          </div>
-
-          {/* Conditions */}
-          <div className="d-flex flex-column gap-2">
-            {/* Checkbox 1 */}
-            <div className="d-flex align-items-center justify-center gap-2">
-              <input
-                type="checkbox"
-                className="custom-check"
-                id="requirement1"
-              />
-              <label
-                htmlFor="requirement1"
-                style={{
-                  color: "#344054",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  marginBottom: 0,
-                }}
-              >
-                Must be at least 8 characters
-              </label>
-            </div>
-
-            {/* Checkbox 2 */}
-            <div className="d-flex align-items-center gap-2">
-              <input
-                type="checkbox"
-                className="custom-check"
-                id="requirement2"
-              />
-              <label
-                htmlFor="requirement2"
-                style={{
-                  color: "#344054",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  marginBottom: 0,
-                }}
-              >
-                Must contain one special character
-              </label>
-            </div>
-          </div>
-
-          {/* Button */}
-          <button
-            type="submit"
-            className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
-          >
-            Get started
-          </button>
-        </form>
-        {showModal && (
-  <SignupSuccessModal onClose={handleClose} onConfirm={handleConfirm} />
-)}
-
-        {/* Footer */}
-        <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
-          Already have an account?{" "}
-          <a
-            href="#"
-            className="text-[#295FB5] text-[14px] font-medium hover:underline"
-            onClick={() => setCurrentScreen("login")}
-          >
-            Log in
-          </a>
-        </p>
-      </div>
-    </div>
-  );
-  const ForgotPasswordScreen = ({ setCurrentScreen }) => (
-    <div
-      className="w-screen h-screen flex items-center justify-center"
-      style={{
-        backgroundImage: `url(${loginBg})`,
-        backgroundSize: "100% 100%",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="bg-white bg-opacity-80 p-10 rounded-xl shadow-md w-full max-w-md">
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-6">
-          <img src={loginLogo} alt="Logo" className="mb-2" />
-        </div>
-  
-        {/* Heading */}
-        <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-2" onClick={() => setCurrentScreen("forgot")}>
-          Forgot Password?
-        </h2>
-  
-        {/* Subheading */}
-        <p className="text-[#475467] text-[14px] font-normal text-center mb-6">
-          We'll send you a link to create a new password.
-        </p>
-  
-        <form className="space-y-4">
-          {/* Email Field */}
-          <div>
-            <label className="block text-[#344054] text-[14px] font-medium mb-1">
-              Email*
-            </label>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-            />
-          </div>
-  
-          {/* Send Code Button */}
-          <button
-            type="submit"
-            className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
-          >
-            Send code
-          </button>
-        </form>
-  
-        {/* Footer */}
-        <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
-          Already have an account?{" "}
-          <a
-            href="#"
-            className="text-[#295FB5] text-[14px] font-medium hover:underline"
-            onClick={() => setCurrentScreen("login")}
-          >
-            Log in
-          </a>
-        </p>
-      </div>
-    </div>
-  );
-  
 
   // Screen rendering logic
   const renderScreen = () => {
     switch (currentScreen) {
       case "selectCharacter":
         return (
-         
-
           <SelectCharacter
             setCurrentScreen={handleScreenChange}
             setSelectedAvatar={setSelectedAvatar}
@@ -2129,10 +2380,13 @@ const handleConfirm = () => {
       case "home":
         return (
           <HomeScreen
-            setCurrentScreen={handleScreenChange}
-            goBack={() => setCurrentScreen("selectCharacter")}
-            selectedAvatar={selectedAvatar} // ✅ pass selected avatar here
-            setIsAvatarUpdate={setIsAvatarUpdate}
+          setCurrentScreen={handleScreenChange}
+          goBack={() => setCurrentScreen("selectCharacter")}
+          selectedAvatar={selectedAvatar}
+          setIsAvatarUpdate={setIsAvatarUpdate}
+          setEmail={setEmail}
+          setPassword={setPassword}
+          setName={setName}
           />
         );
       case "learn":
@@ -2160,13 +2414,66 @@ const handleConfirm = () => {
         );
       case "progress":
         return <ProgressScreen />;
-        case "login":
-          return <LoginScreen setCurrentScreen={handleScreenChange}  />;
+      case "login":
+        return (
+          <LoginScreen
+            error={error}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+            setCurrentScreen={handleScreenChange}
+          />
+        );
 
       case "signup":
-        return <SignupScreen setCurrentScreen={handleScreenChange} />;
-        case "forgot":
-          return <ForgotPasswordScreen setCurrentScreen={setCurrentScreen} />;
+        return (
+          <SignupScreen
+            name={name}
+            setName={setName}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            handleSignup={handleSignup}
+            showModal={showModal}
+            handleClose={handleClose}
+            handleConfirm={handleConfirm}
+            setCurrentScreen={handleScreenChange}
+            error={error}
+            isLengthValid={isLengthValid}
+            hasSpecialChar={hasSpecialChar}
+          />
+        );
+      case "forgot":
+        return (
+          <ForgotPasswordScreen
+            setCurrentScreen={handleScreenChange}
+            email={email}
+            setEmail={setEmail}
+            message={message}
+            setMessage={setMessage}
+            error={error}
+            setError={setError}
+            setResetToken={setResetToken}
+            handleForgotPassword={handleForgotPassword}
+          />
+        );
+      case "resetPassword":
+        return (
+          <ResetPasswordScreen
+            token={resetToken}
+            setCurrentScreen={handleScreenChange}
+            password={password}
+            setPassword={setPassword}
+            message={message}
+            setMessage={setMessage}
+            error={error}
+            setError={setError}
+            handleReset={handleReset}
+          />
+        );
       // default:
       //   return <HomeScreen setCurrentScreen={handleScreenChange}  goBack={() => setCurrentScreen("selectCharacter")} />;
     }

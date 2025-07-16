@@ -29,6 +29,9 @@ const HomeScreen = ({
   goBack,
   selectedAvatar,
   setIsAvatarUpdate,
+  setEmail,
+  setPassword,
+  setName,
 }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
@@ -68,6 +71,44 @@ const HomeScreen = ({
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleDeleteAccount = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete your account permanently?");
+    if (!confirmDelete) return;
+  
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You are not logged in.");
+      return;
+    }
+  
+    try {
+      const res = await fetch("http://localhost:5000/api/user/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok && data.success) {
+        alert("Account deleted successfully.");
+        localStorage.removeItem("token");
+        setShowDeletePopup(false);
+        setCurrentScreen("login"); // Redirect user to login screen
+      } else {
+        alert(data.msg || "Failed to delete account.");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Something went wrong. Please try again.");
+    }
+
+    setShowDeletePopup(false);
+  };
+  
 
   const smallScreen = windowWidth <= 425;
   const isMobile = windowWidth <= 768;
@@ -267,7 +308,7 @@ const HomeScreen = ({
                   <span>About us</span>
                 </div>
 
-                {/* Delete account */}
+               
                 <div
                   className="flex items-center gap-2 bg-[#D92D20] text-white text-[18px] font-medium px-4 py-3 rounded-lg shadow-[0px_4px_0px_#8C7338] cursor-pointer"
                   onClick={() => setShowDeletePopup(true)}
@@ -314,9 +355,20 @@ const HomeScreen = ({
             <button
               className="w-full bg-[#D92D20] text-white text-[16px] font-semibold py-3 rounded-lg mb-4"
               onClick={() => {
-                // Handle deletion here
+                // ✅ Clear user session
+                localStorage.removeItem("token");
+              
+                // ✅ Reset any state if needed (example)
+                setEmail("");
+                setPassword("");
+                setName("");
+                // setSelectedAvatar(null); // if applicable
+              
+                // ✅ Close popup and go to login screen
                 setShowLogoutPopup(false);
+                setCurrentScreen("login");
               }}
+              
             >
             Logout 
             </button>
@@ -359,10 +411,11 @@ const HomeScreen = ({
             {/* Delete Button */}
             <button
               className="w-full bg-[#D92D20] text-white text-[16px] font-semibold py-3 rounded-lg mb-4"
-              onClick={() => {
-                // Handle deletion here
-                setShowDeletePopup(false);
-              }}
+              // onClick={() => {
+               
+              //   setShowDeletePopup(false);
+              // }}
+              onClick={handleDeleteAccount}
             >
               Delete Account
             </button>
@@ -461,7 +514,7 @@ const HomeScreen = ({
                 {/* Monthly Plan Option */}
                 <div
                   className="w-full border border-[#357AE8] bg-[#EBF3FF] rounded-xl px-4 py-3 cursor-pointer"
-                  onClick={handleOpen}
+                  // onClick={handleOpen}
                 >
                   <div className="flex justify-between items-center">
                     <label className="flex items-center gap-2">
@@ -489,7 +542,7 @@ const HomeScreen = ({
                 {/* Yearly Plan Option */}
                 <div
                   className="w-full border border-[#357AE8] bg-[#EBF3FF] rounded-xl px-4 py-3 mt-3 cursor-pointer"
-                  onClick={handleOpenYearly}
+                  // onClick={handleOpenYearly}
                 >
                   <div className="flex justify-between items-center">
                     <label className="flex items-center gap-2">
