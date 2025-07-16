@@ -904,50 +904,84 @@ function App() {
     }
   };
 
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+
+   
+  //   if (!email || !password) {
+  //     setError("Email and password are required.");
+  //     return;
+  //   }
+
+
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!emailRegex.test(email)) {
+  //     setError("Enter a valid email address.");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   setError("");
+
+  //   try {
+  //     const res = await fetch("http://localhost:5000/api/auth/login", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ email, password }),
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (!res.ok) {
+  //       setError(data.msg || "Login failed. Please try again.");
+  //       setLoading(false);
+  //       return;
+  //     }
+
+  //     console.log("Login successful:", data);
+  //     localStorage.setItem("token", data.token);
+  //     setCurrentScreen("selectCharacter");
+  //   } catch (err) {
+  //     setError("Something went wrong. Please try again later.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     // ✅ Frontend validation
     if (!email || !password) {
       setError("Email and password are required.");
       return;
     }
-
-    // ✅ Basic email format check
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Enter a valid email address.");
       return;
     }
-
+  
     setLoading(true);
     setError("");
-
+  
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.msg || "Login failed. Please try again.");
-        setLoading(false);
-        return;
-      }
-
-      console.log("Login successful:", data);
-      localStorage.setItem("token", data.token);
+      // ✅ MOCK LOGIN: Skip API call
+      const mockToken = "mock-token-12345";
+      localStorage.setItem("token", mockToken);
+      console.log("Mock login successful!");
+  
+      // ✅ Navigate to the next screen
       setCurrentScreen("selectCharacter");
     } catch (err) {
-      setError("Something went wrong. Please try again later.");
+      setError("Something went wrong.");
     } finally {
       setLoading(false);
     }
   };
-
+  
   const handleSignup = async (e) => {
     e.preventDefault();
 
@@ -984,10 +1018,6 @@ function App() {
     }
   };
 
-  // const handleSignup = (e) => {
-  //   e.preventDefault();
-  //   setShowModal(true);
-  // };
 
   const handleClose = () => setShowModal(false);
   const handleConfirm = () => {
