@@ -363,7 +363,7 @@ body,
     right: 3px !important;
     cursor: pointer !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-    border: 4px solid #FFB800;
+    /* border: 4px solid #FFB800; */
 }
   .arrow-back-top {
     top: 5px;
@@ -435,7 +435,7 @@ body,
     right: 3px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-    border: 4px solid #FFB800;
+    /* border: 4px solid #FFB800; */
 }
   .avatarGridWrapper {
     background-color: #ffe09c;
@@ -504,7 +504,7 @@ body,
     right: 3px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-    border: 4px solid #FFB800;
+    /* border: 4px solid #FFB800; */
 }
   .board {
     margin-top: 450px;
@@ -804,18 +804,26 @@ body,
   right: 20px;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-  border: 4px solid #FFB800;
+  /* border: 4px solid #FFB800; */
 }
 
 
 
 /* Medium and up: 6 columns */
 
-@media (min-width: 768px) and (max-width: 1023px) {
+ @media (min-width: 768px) {
   .card-grid {
-    grid-template-columns: repeat(4, 1fr);
+    display: grid;
+    grid-template-columns: repeat(
+      6,
+      1fr
+    ); /* Default: 2 columns for small screens */
   }
-}
+  .card {
+    width: 60px;
+    height: 90px;
+  }
+} 
 
 @media (min-width: 1024px) {
   .card-grid {
@@ -895,7 +903,8 @@ body,
 @media (max-width: 768px) {
  
   .card {
-    width: 140px;
+    width: 78px;
+    height: 100px;
   }
 }
 @media (max-width: 480px) {

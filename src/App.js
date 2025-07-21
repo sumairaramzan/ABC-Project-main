@@ -134,6 +134,7 @@ import xylophone from "./assets/singleAnimals/xylophone.svg";
 import yellow from "./assets/singleAnimals/yellow.svg";
 import zebra from "./assets/singleAnimals/zebra.svg";
 import congratulations from "./assets/images/congrateImg.svg";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 // Helper function for speech synthesis
 const initSpeech = async (text, options = {}) => {
@@ -467,17 +468,20 @@ const SignupScreen = ({
   setCurrentScreen,
   hasSpecialChar,
   isLengthValid,
+  showPassword,
+  setShowPassword
 }) => (
   <div
-    className="w-screen h-screen flex items-center justify-center"
-    style={{
-      backgroundImage: `url(${loginBg})`,
-      backgroundSize: "100% 100%",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-    }}
-  >
-    <div className="bg-white bg-opacity-80 p-10 rounded-xl shadow-md w-full max-w-md">
+  className="min-h-screen flex items-center justify-center px-4"
+  style={{
+    backgroundImage: `url(${loginBg})`,
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    overflow: "hidden", // prevent overflow scrolling
+  }}
+>
+    <div className="bg-white bg-opacity-90 p-6 sm:p-10 rounded-xl shadow-md w-full max-w-md">
       {/* Logo + Title */}
       <div className="flex flex-col items-center mb-6">
         <img src={loginLogo} alt="Logo" className="mb-2" />
@@ -490,6 +494,7 @@ const SignupScreen = ({
 
       <form className="space-y-4" onSubmit={handleSignup}>
         {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+
         {/* Name */}
         <div>
           <label className="block text-[#344054] text-[14px] font-medium mb-1">
@@ -521,45 +526,49 @@ const SignupScreen = ({
         </div>
 
         {/* Password */}
-        <div>
-          <label className="block text-[#344054] text-[14px] font-medium mb-1">
-            Password*
-          </label>
-          <input
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Enter your password"
-            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-          />
-        </div>
+        <div className="relative">
+      <label className="block text-[#344054] text-[14px] font-medium mb-1">
+        Password*
+      </label>
+      <input
+        required
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        type={showPassword ? "text" : "password"}
+        placeholder="Enter your password"
+        className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+      />
+      <div
+        className="absolute right-3 top-[38px] text-gray-500 cursor-pointer"
+        onClick={() => setShowPassword((prev) => !prev)}
+      >
+        {showPassword ? <FaEyeSlash /> : <FaEye />}
+      </div>
+    </div>
 
-        <div className="d-flex flex-column gap-3">
-          {/* Checkbox 1 */}
-          <div className="d-flex align-items-center">
+        {/* Password Criteria */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="custom-check"
+              className="accent-blue-600"
               id="requirement1"
               checked={isLengthValid}
               readOnly
             />
-            <label htmlFor="requirement1" className="custom-check-label">
+            <label htmlFor="requirement1" className="text-sm text-[#344054]">
               Must be at least 8 characters
             </label>
           </div>
-
-          {/* Checkbox 2 */}
-          <div className="d-flex align-items-center">
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="custom-check"
+              className="accent-blue-600"
               id="requirement2"
               checked={hasSpecialChar}
               readOnly
             />
-            <label htmlFor="requirement2" className="custom-check-label">
+            <label htmlFor="requirement2" className="text-sm text-[#344054]">
               Must contain one special character
             </label>
           </div>
@@ -573,6 +582,8 @@ const SignupScreen = ({
           Get started
         </button>
       </form>
+
+      {/* Success Modal */}
       {showModal && (
         <SignupSuccessModal onClose={handleClose} onConfirm={handleConfirm} />
       )}
@@ -591,6 +602,7 @@ const SignupScreen = ({
     </div>
   </div>
 );
+
 const LoginScreen = ({
   error,
   email,
@@ -601,7 +613,7 @@ const LoginScreen = ({
   setCurrentScreen,
 }) => (
   <div
-    className="w-screen h-screen flex items-center justify-center"
+    className="w-screen h-screen flex items-center justify-center px-4"
     style={{
       backgroundImage: `url(${loginBg})`,
       backgroundSize: "100% 100%",
@@ -609,7 +621,7 @@ const LoginScreen = ({
       backgroundPosition: "center",
     }}
   >
-    <div className="bg-white p-10 rounded-xl shadow-md w-full max-w-md bg-color">
+    <div className="bg-white bg-opacity-90 p-6 sm:p-10 rounded-xl shadow-md w-full max-w-md">
       {/* Logo + Title */}
       <div className="flex flex-col items-center mb-6">
         <img src={loginLogo} alt="Logo" className="mb-2" />
@@ -740,7 +752,7 @@ const ForgotPasswordScreen = ({
   setResetToken,
 }) => (
   <div
-    className="w-screen h-screen flex items-center justify-center"
+    className="w-screen h-screen flex items-center justify-center px-4"
     style={{
       backgroundImage: `url(${loginBg})`,
       backgroundSize: "100% 100%",
@@ -748,7 +760,7 @@ const ForgotPasswordScreen = ({
       backgroundPosition: "center",
     }}
   >
-    <div className="bg-white bg-opacity-80 p-10 rounded-xl shadow-md w-full max-w-md">
+    <div className="bg-white bg-opacity-90 p-6 sm:p-10 rounded-xl shadow-md w-full max-w-md">
       {/* Logo */}
       <div className="flex flex-col items-center mb-6">
         <img src={loginLogo} alt="Logo" className="mb-2" />
@@ -823,6 +835,7 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [isLengthValid, setIsLengthValid] = useState(false);
   const [hasSpecialChar, setHasSpecialChar] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -904,88 +917,86 @@ function App() {
     }
   };
 
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-
-   
-  //   if (!email || !password) {
-  //     setError("Email and password are required.");
-  //     return;
-  //   }
-
-
-  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   if (!emailRegex.test(email)) {
-  //     setError("Enter a valid email address.");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-  //   setError("");
-
-  //   try {
-  //     const res = await fetch("http://localhost:5000/api/auth/login", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ email, password }),
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (!res.ok) {
-  //       setError(data.msg || "Login failed. Please try again.");
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     console.log("Login successful:", data);
-  //     localStorage.setItem("token", data.token);
-  //     setCurrentScreen("selectCharacter");
-  //   } catch (err) {
-  //     setError("Something went wrong. Please try again later.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
   const handleLogin = async (e) => {
     e.preventDefault();
-  
-    // ✅ Frontend validation
+
+   
     if (!email || !password) {
       setError("Email and password are required.");
       return;
     }
-  
+
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Enter a valid email address.");
       return;
     }
-  
+
     setLoading(true);
     setError("");
-  
+
     try {
-      // ✅ MOCK LOGIN: Skip API call
-      const mockToken = "mock-token-12345";
-      localStorage.setItem("token", mockToken);
-      console.log("Mock login successful!");
-  
-      // ✅ Navigate to the next screen
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.msg || "Login failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      console.log("Login successful:", data);
+      localStorage.setItem("token", data.token);
       setCurrentScreen("selectCharacter");
     } catch (err) {
-      setError("Something went wrong.");
+      setError("Something went wrong. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
+
+
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  
+  //   if (!email || !password) {
+  //     setError("Email and password are required.");
+  //     return;
+  //   }
+  
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!emailRegex.test(email)) {
+  //     setError("Enter a valid email address.");
+  //     return;
+  //   }
+  
+  //   setLoading(true);
+  //   setError("");
+  
+  //   try {
+     
+  //     const mockToken = "mock-token-12345";
+  //     localStorage.setItem("token", mockToken);
+  //     console.log("Mock login successful!");
+
+  //     setCurrentScreen("selectCharacter");
+  //   } catch (err) {
+  //     setError("Something went wrong.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    // Basic frontend validation
+
     if (!name || !email || !password) {
       setError("All fields are required.");
       return;
@@ -1031,6 +1042,20 @@ function App() {
     setPreviousScreen(currentScreen);
     setCurrentScreen(newScreen);
   };
+
+  useEffect(() => {
+    if (["login", "forgotPassword", "resetPassword"].includes(currentScreen)) {
+      setEmail("");
+      setPassword("");
+    }
+  
+    if (currentScreen === "signup") {
+      setName("");
+      setEmail("");
+      setPassword("");
+    }
+  }, [currentScreen]);
+  
 
   // CelebrationDialog Component
   const CelebrationDialog = ({
@@ -2176,6 +2201,12 @@ function App() {
         startGame();
       }
     }, []);
+    useEffect(() => {
+      return () => {
+        // Cancel any ongoing speech when component unmounts
+        window.speechSynthesis.cancel();
+      };
+    }, []);
 
     return (
       <>
@@ -2474,6 +2505,8 @@ function App() {
             error={error}
             isLengthValid={isLengthValid}
             hasSpecialChar={hasSpecialChar}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
           />
         );
       case "forgot":

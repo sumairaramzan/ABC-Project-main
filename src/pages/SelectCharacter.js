@@ -63,13 +63,6 @@ const SelectCharacter = ({
     setIsAvatarUpdate(false);
   };
 
-  const getGridColumns = () => {
-    if (windowWidth <= 480) return 3;
-    if (windowWidth <= 768) return 4;
-    if (windowWidth <= 1024) return 5;
-    return 6;
-  };
-
   const getAvatarSize = () => {
     if (windowWidth <= 320) return "60px";
     if (windowWidth <= 480) return "70px";
@@ -83,33 +76,39 @@ const SelectCharacter = ({
       fontFamily: "'Arial Rounded MT Bold', sans-serif",
       backgroundColor: "#6AA9FF",
       minHeight: "100dvh",
-      padding: "10px",
+      maxHeight: "100dvh",
+      overflow: "hidden",
+      padding: "16px",
       boxSizing: "border-box",
-      overflowY: "hidden",
+      display: "flex",
+      flexDirection: "column",
     },
-  
+    headerContainer: {
+      alignSelf: "flex-start",
+    },
     header: {
       color: "#FFB800",
       fontWeight: "bold",
-      fontSize: windowWidth <= 480 ? "28px" : "40px",
+      fontSize: windowWidth <= 480 ? "26px" : "36px",
       WebkitTextStroke: "1px black",
       textStroke: "1px black",
     },
     subtext: {
       color: "#ffffff",
-      fontSize: windowWidth <= 480 ? "14px" : "20px",
-      marginTop: "5px",
+      fontSize: windowWidth <= 480 ? "14px" : "18px",
+      marginTop: "6px",
     },
     selectedChar: {
-      width: "120px",
-      height: "114px",
+      width: "25vw", // 25% of screen width
+      maxWidth: "80px",
+      aspectRatio: "1", // keeps it circular
       borderRadius: "50%",
       backgroundColor: "#fff",
-      margin: "0px auto 10px",
+      margin: "16px auto",
       overflow: "hidden",
-      border: "4px solid #FFB800",
       boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
     },
+    
     selectedImg: {
       width: "100%",
       height: "100%",
@@ -118,19 +117,26 @@ const SelectCharacter = ({
     card: {
       backgroundColor: "#FFE29D",
       borderRadius: "20px",
-      padding: "13px",
-      maxWidth: "1000px",
+      padding: "16px",
       width: "100%",
-      boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+      maxWidth: "1000px",
       margin: "0 auto",
-      textAlign: "center",
+      boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+      // flexGrow: 1,
+      display: "flex",
+      flexDirection: "column",
     },
     grid: {
       display: "grid",
-      gridTemplateColumns: `repeat(${getGridColumns()}, 1fr)`,
-      gap: "14px",
+      gridTemplateColumns:
+        windowWidth <= 480
+          ? "repeat(3, 1fr)"
+          : windowWidth <= 768
+          ? "repeat(4, 1fr)"
+          : "repeat(6, 1fr)",
+      gap: "12px",
       justifyItems: "center",
-      marginBottom: "10px",
+      padding: "8px",
     },
     avatarWrapper: (index) => ({
       width: getAvatarSize(),
@@ -163,6 +169,8 @@ const SelectCharacter = ({
       cursor: "pointer",
       fontWeight: "600",
       transition: "all 0.3s ease",
+      alignSelf: "center",
+      marginTop: "12px",
     },
   };
 
