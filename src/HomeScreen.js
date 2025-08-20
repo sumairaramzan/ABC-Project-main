@@ -175,7 +175,7 @@ const HomeScreen = ({
       gap: isMobile ? "10px" : "20px",
     },
     card: {
-      width: "300px",
+      width: "250px",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -235,14 +235,14 @@ const HomeScreen = ({
 
       {showSettingsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-2">
-          <div
-            className="relative rounded-xl w-full max-w-[530px] max-h-[90vh] shadow-xl overflow-y-auto"
-            style={{
-              backgroundImage: `url(${popupBg})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          >
+         <div
+  className="relative rounded-xl w-full max-w-[530px] shadow-xl"
+  style={{
+    backgroundImage: `url(${popupBg})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
             {/* Top Heading with Cross Icon */}
             <div className="text-[#F4D98A] text-[20px] sm:text-[24px] font-bold flex justify-between items-center px-4 sm:px-6 pt-4">
               <span>Settings</span>
@@ -482,7 +482,7 @@ const HomeScreen = ({
            </h2>
      
            <p className="text-[#373940] text-[15px] sm:text-[17px] text-center">
-             Pick a plan that fits your child’s learning.
+             Pick a plan that fitsgggg your child’s learning.
            </p>
      
            {/* Plan Section */}
@@ -598,129 +598,129 @@ const HomeScreen = ({
      </div>
      
       )}
-      {showConfirmPopup && (
-       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-2">
-       <div className="bg-white rounded-xl w-full max-w-[500px] p-4 sm:p-6 shadow-xl">
-         {/* Header */}
-         <div className="text-[#101828] text-[18px] font-medium mb-3 flex justify-between items-center">
-           <button
-             onClick={() => {
-               setShowConfirmPopup(false);
-               setShowSubscriptionModal(true);
-             }}
-           >
-             ←
-           </button>
-           <span>Confirm</span>
-           <span></span>
-         </div>
-     
-         {/* Selected Plan Box */}
-         <div className="border border-[#357AE8] bg-[#EBF3FF] rounded-lg p-3 flex justify-between items-start">
-           <div>
-             <label className="flex items-center gap-2">
-               <input
-                 type="radio"
-                 checked
-                 className="accent-[#357AE8] w-4 h-4"
-               />
-               <span className="text-[#101828] text-[16px] font-medium">
-                 Yearly Plan
-               </span>
-             </label>
-             <ul className="mt-2 pl-5 list-disc text-[#344054] text-sm space-y-1">
-               <li>Everything in monthly plan</li>
-               <li>2 months free</li>
-               <li>Best for long-term learning</li>
-             </ul>
-           </div>
-           <div className="text-right">
-             <p className="text-[#101828] text-[15px] font-medium">$39.99/year</p>
-             <p className="text-[#9C27B0] text-[12px] font-semibold mt-1">
-               🌟 Best Value
-             </p>
-           </div>
-         </div>
-     
-         {/* Details Section */}
-         <div className="mt-4">
-           <h3 className="text-[#101828] text-[20px] font-semibold mb-2">Details</h3>
-           <div className="flex justify-between text-[#101828] text-[16px] mb-1">
-             <span>Yearly subscription</span>
-             <span>$39.99</span>
-           </div>
-           <div className="flex justify-between text-[#101828] text-[16px] mb-1">
-             <span>Tax</span>
-             <span>$1.59</span>
-           </div>
-           <div className="flex justify-between text-[#101828] text-[18px] font-semibold mt-3">
-             <span>Total</span>
-             <span>$41.58</span>
-           </div>
-         </div>
-     
-         {/* Payment Method Section */}
-         <div className="mt-5">
-           <div className="flex justify-between items-center mb-3">
-             <h3 className="text-[#101828] text-[20px] font-semibold">
-               Payment Method
-             </h3>
-             <button className="text-[#3A86FF] text-sm font-medium flex items-center gap-1">
-               <span className="text-lg font-bold">+</span> Add New
-             </button>
-           </div>
-     
-           {/* Mastercard */}
-           <div className="border rounded-lg px-4 py-2 flex justify-between items-center mb-3 border-[#3A86FF]">
-             <div className="flex items-center gap-3">
-               <img
-                 src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png"
-                 alt="mastercard"
-                 className="w-8"
-               />
-               <div>
-                 <p className="text-[#101828] text-[15px] font-medium">Mastercard</p>
-                 <p className="text-[#344054] text-sm">**** **** **** 4565</p>
-               </div>
-             </div>
-             <input
-               type="radio"
-               checked
-               className="accent-[#3A86FF] w-4 h-4"
-             />
-           </div>
-     
-           {/* Visa */}
-           <div className="border rounded-lg px-4 py-2 flex justify-between items-center">
-             <div className="flex items-center gap-3">
-               <img
-                 src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
-                 alt="visa"
-                 className="w-8"
-               />
-               <div>
-                 <p className="text-[#101828] text-[15px] font-medium">Visa card</p>
-                 <p className="text-[#344054] text-sm">**** **** **** 3223</p>
-               </div>
-             </div>
-             <input type="radio" className="accent-[#3A86FF] w-4 h-4" />
-           </div>
-         </div>
-     
-         {/* Pay Now Button */}
-         <button
-           className="mt-5 w-full bg-[#3A86FF] text-white text-[15px] font-semibold py-2.5 rounded-lg"
-           onClick={() => {
-             setShowConfirmPopup(false);
-             setShowAddCardPopup(true);
-           }}
-         >
-           Pay Now
-         </button>
-       </div>
-     </div>
-     
-      )}
+     {showConfirmPopup && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-2">
+    <div className="bg-white rounded-xl w-full max-w-[500px] p-4 sm:p-6 shadow-xl my-6 sm:my-10 max-h-[90vh] overflow-hidden">
+      {/* Header */}
+      <div className="text-[#101828] text-[18px] font-medium mb-3 flex justify-between items-center">
+        <button
+          onClick={() => {
+            setShowConfirmPopup(false);
+            setShowSubscriptionModal(true);
+          }}
+        >
+          ←
+        </button>
+        <span>Confirm</span>
+        <span></span>
+      </div>
+
+      {/* Selected Plan Box */}
+      <div className="border border-[#357AE8] bg-[#EBF3FF] rounded-lg p-3 flex justify-between items-start">
+        <div>
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              checked
+              className="accent-[#357AE8] w-4 h-4"
+            />
+            <span className="text-[#101828] text-[16px] font-medium">
+              Yearly Plan
+            </span>
+          </label>
+          <ul className="mt-2 pl-5 list-disc text-[#344054] text-sm space-y-1">
+            <li>Everything in monthly plan</li>
+            <li>2 months free</li>
+            <li>Best for long-term learning</li>
+          </ul>
+        </div>
+        <div className="text-right">
+          <p className="text-[#101828] text-[15px] font-medium">$39.99/year</p>
+          <p className="text-[#9C27B0] text-[12px] font-semibold mt-1">
+            🌟 Best Value
+          </p>
+        </div>
+      </div>
+
+      {/* Details Section */}
+      <div className="mt-4">
+        <h3 className="text-[#101828] text-[20px] font-semibold mb-2">Details</h3>
+        <div className="flex justify-between text-[#101828] text-[16px] mb-1">
+          <span>Yearly subscription</span>
+          <span>$39.99</span>
+        </div>
+        <div className="flex justify-between text-[#101828] text-[16px] mb-1">
+          <span>Tax</span>
+          <span>$1.59</span>
+        </div>
+        <div className="flex justify-between text-[#101828] text-[18px] font-semibold mt-3">
+          <span>Total</span>
+          <span>$41.58</span>
+        </div>
+      </div>
+
+      {/* Payment Method Section */}
+      <div className="mt-5">
+        <div className="flex justify-between items-center mb-3">
+          <h3 className="text-[#101828] text-[20px] font-semibold">
+            Payment Method
+          </h3>
+          <button className="text-[#3A86FF] text-sm font-medium flex items-center gap-1">
+            <span className="text-lg font-bold">+</span> Add New
+          </button>
+        </div>
+
+        {/* Mastercard */}
+        <div className="border rounded-lg px-4 py-2 flex justify-between items-center mb-3 border-[#3A86FF]">
+          <div className="flex items-center gap-3">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png"
+              alt="mastercard"
+              className="w-8"
+            />
+            <div>
+              <p className="text-[#101828] text-[15px] font-medium">Mastercard</p>
+              <p className="text-[#344054] text-sm">**** **** **** 4565</p>
+            </div>
+          </div>
+          <input
+            type="radio"
+            checked
+            className="accent-[#3A86FF] w-4 h-4"
+          />
+        </div>
+
+        {/* Visa */}
+        <div className="border rounded-lg px-4 py-2 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
+              alt="visa"
+              className="w-8"
+            />
+            <div>
+              <p className="text-[#101828] text-[15px] font-medium">Visa card</p>
+              <p className="text-[#344054] text-sm">**** **** **** 3223</p>
+            </div>
+          </div>
+          <input type="radio" className="accent-[#3A86FF] w-4 h-4" />
+        </div>
+      </div>
+
+      {/* Pay Now Button */}
+      <button
+        className="mt-5 w-full bg-[#3A86FF] text-white text-[15px] font-semibold py-2.5 rounded-lg"
+        onClick={() => {
+          setShowConfirmPopup(false);
+          setShowAddCardPopup(true);
+        }}
+      >
+        Pay Now
+      </button>
+    </div>
+  </div>
+)}
+
       {showAddCardPopup && (
        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-2 sm:px-0">
        <div className="bg-white rounded-xl w-full max-w-[500px] p-6 shadow-xl max-h-[90vh] overflow-y-auto relative mx-2 sm:mx-0">

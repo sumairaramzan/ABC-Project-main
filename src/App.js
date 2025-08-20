@@ -469,31 +469,37 @@ const SignupScreen = ({
   hasSpecialChar,
   isLengthValid,
   showPassword,
-  setShowPassword
+  setShowPassword,
+  nameError,
+  emailError,
+  passwordError,
+  loading
 }) => (
   <div
-  className="min-h-screen flex items-center justify-center px-4"
-  style={{
-    backgroundImage: `url(${loginBg})`,
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center",
-    overflow: "hidden", // prevent overflow scrolling
-  }}
->
-    <div className="bg-white bg-opacity-90 p-6 sm:p-10 rounded-xl shadow-md w-full max-w-md">
-      {/* Logo + Title */}
-      <div className="flex flex-col items-center mb-6">
-        <img src={loginLogo} alt="Logo" className="mb-2" />
+    className="h-screen w-screen flex items-center justify-center px-4 overflow-hidden"
+    style={{
+      backgroundImage: `url(${loginBg})`,
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+    }}
+  >
+    <div className="bg-white bg-opacity-90 p-6 sm:p-10 rounded-xl shadow-md w-full max-w-md flex flex-col h-[90vh] justify-between">
+      
+      {/* Logo */}
+      <div className="flex flex-col items-center">
+        <img src={loginLogo} alt="Logo" className="mb-4 w-28 sm:w-32" />
+        <h2 className="text-[#101828] text-[22px] sm:text-[24px] font-semibold text-center">
+          Create an account
+        </h2>
       </div>
 
-      {/* Heading */}
-      <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-6">
-        Create an account
-      </h2>
-
-      <form className="space-y-4" onSubmit={handleSignup}>
-        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+      {/* Form */}
+      <form
+        className="space-y-4 flex-1 overflow-y-auto no-scrollbar mt-4"
+        onSubmit={handleSignup}
+      >
+        {error && <p className="text-red-600 text-sm">{error}</p>}
 
         {/* Name */}
         <div>
@@ -501,13 +507,17 @@ const SignupScreen = ({
             Name*
           </label>
           <input
-            required
             value={name}
             onChange={(e) => setName(e.target.value)}
             type="text"
             placeholder="Enter your name"
-            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+            className={`w-full px-4 py-2 border ${
+              nameError ? "border-red-500" : "border-[#D0D5DD]"
+            } text-[#667085] text-[16px] rounded-lg focus:outline-none focus:ring-2 ${
+              nameError ? "focus:ring-red-500" : "focus:ring-blue-500"
+            }`}
           />
+          {nameError && <p className="text-red-500 text-xs mt-1">{nameError}</p>}
         </div>
 
         {/* Email */}
@@ -516,35 +526,45 @@ const SignupScreen = ({
             Email*
           </label>
           <input
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             placeholder="Enter your email"
-            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
+            className={`w-full px-4 py-2 border ${
+              emailError ? "border-red-500" : "border-[#D0D5DD]"
+            } text-[#667085] text-[16px] rounded-lg focus:outline-none focus:ring-2 ${
+              emailError ? "focus:ring-red-500" : "focus:ring-blue-500"
+            }`}
           />
+          {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
         </div>
 
         {/* Password */}
         <div className="relative">
-      <label className="block text-[#344054] text-[14px] font-medium mb-1">
-        Password*
-      </label>
-      <input
-        required
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        type={showPassword ? "text" : "password"}
-        placeholder="Enter your password"
-        className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-      />
-      <div
-        className="absolute right-3 top-[38px] text-gray-500 cursor-pointer"
-        onClick={() => setShowPassword((prev) => !prev)}
-      >
-        {showPassword ? <FaEyeSlash /> : <FaEye />}
-      </div>
-    </div>
+          <label className="block text-[#344054] text-[14px] font-medium mb-1">
+            Password*
+          </label>
+          <input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password"
+            className={`w-full px-4 py-2 border ${
+              passwordError ? "border-red-500" : "border-[#D0D5DD]"
+            } text-[#667085] text-[16px] rounded-lg focus:outline-none focus:ring-2 ${
+              passwordError ? "focus:ring-red-500" : "focus:ring-blue-500"
+            }`}
+          />
+          <div
+            className="absolute right-3 top-[38px] text-gray-500 cursor-pointer"
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </div>
+          {passwordError && (
+            <p className="text-red-500 text-xs mt-1">{passwordError}</p>
+          )}
+        </div>
 
         {/* Password Criteria */}
         <div className="flex flex-col gap-2">
@@ -552,11 +572,10 @@ const SignupScreen = ({
             <input
               type="checkbox"
               className="accent-blue-600"
-              id="requirement1"
               checked={isLengthValid}
               readOnly
             />
-            <label htmlFor="requirement1" className="text-sm text-[#344054]">
+            <label className="text-sm text-[#344054]">
               Must be at least 8 characters
             </label>
           </div>
@@ -564,29 +583,24 @@ const SignupScreen = ({
             <input
               type="checkbox"
               className="accent-blue-600"
-              id="requirement2"
               checked={hasSpecialChar}
               readOnly
             />
-            <label htmlFor="requirement2" className="text-sm text-[#344054]">
+            <label className="text-sm text-[#344054]">
               Must contain one special character
             </label>
           </div>
         </div>
 
-        {/* Button */}
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
+          disabled={loading}
+          className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition disabled:opacity-50"
         >
-          Get started
+          {loading ? "Signing up..." : "Get started"}
         </button>
       </form>
-
-      {/* Success Modal */}
-      {showModal && (
-        <SignupSuccessModal onClose={handleClose} onConfirm={handleConfirm} />
-      )}
 
       {/* Footer */}
       <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
@@ -599,18 +613,30 @@ const SignupScreen = ({
           Log in
         </a>
       </p>
+
+      {/* Modal */}
+      {showModal && (
+        <SignupSuccessModal onClose={handleClose} onConfirm={handleConfirm} />
+      )}
     </div>
   </div>
 );
 
+
+
 const LoginScreen = ({
-  error,
   email,
   setEmail,
   password,
   setPassword,
   handleLogin,
   setCurrentScreen,
+  showPassword,
+  setShowPassword,
+  generalError,
+  emailError,
+  passwordError,
+  loading
 }) => (
   <div
     className="w-screen h-screen flex items-center justify-center px-4"
@@ -632,53 +658,76 @@ const LoginScreen = ({
       </h2>
 
       <form className="space-y-4" onSubmit={handleLogin}>
-        {error && (
-          <p className="text-red-600 text-sm mb-2 text-center">{error}</p>
-        )}
-        {/* Email Field */}
-        <div>
-          <label className="block text-[#344054] text-[14px] font-medium mb-1">
-            Email*
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-          />
-        </div>
+  {/* General error (API failure) */}
+  {generalError && (
+    <p className="text-red-600 text-sm mb-2 text-center">{generalError}</p>
+  )}
 
-        {/* Password Field */}
-        <div>
-          <label className="block text-[#344054] text-[14px] font-medium mb-1">
-            Password*
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#667085]"
-          />
-          <div className="text-right mt-1">
-            <a
-              href="#"
-              className="text-[#295FB5] text-[14px] font-medium hover:underline"
-              onClick={() => setCurrentScreen("forgot")}
-            >
-              Forgot password
-            </a>
-          </div>
-        </div>
+  {/* Email Field */}
+  <div>
+    <label className="block text-[#344054] text-[14px] font-medium mb-1">
+      Email*
+    </label>
+    <input
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      placeholder="Enter your email"
+      className={`w-full px-4 py-2 border ${
+        emailError ? "border-red-500" : "border-[#D0D5DD]"
+      } text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 ${
+        emailError ? "focus:ring-red-500" : "focus:ring-blue-500"
+      }`}
+    />
+    {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
+  </div>
 
-        <button
-          type="submit"
-          className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
-        >
-          Sign in
-        </button>
-      </form>
+  {/* Password Field */}
+  <div className="relative">
+    <label className="block text-[#344054] text-[14px] font-medium mb-1">
+      Password*
+    </label>
+    <input
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      placeholder="Enter your password"
+      className={`w-full px-4 py-2 border ${
+        passwordError ? "border-red-500" : "border-[#D0D5DD]"
+      } text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 ${
+        passwordError ? "focus:ring-red-500" : "focus:ring-blue-500"
+      }`}
+    />
+    <div
+      className="absolute right-3 top-[38px] text-gray-500 cursor-pointer"
+      onClick={() => setShowPassword((prev) => !prev)}
+    >
+      {showPassword ? <FaEyeSlash /> : <FaEye />}
+    </div>
+    {passwordError && (
+      <p className="text-red-500 text-xs mt-1">{passwordError}</p>
+    )}
+
+    <div className="text-right mt-1">
+      <a
+        href="#"
+        className="text-[#295FB5] text-[14px] font-medium hover:underline"
+        onClick={() => setCurrentScreen("forgot")}
+      >
+        Forgot password
+      </a>
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    disabled={loading}
+    className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition disabled:opacity-50"
+  >
+    {loading ? "Signing in..." : "Sign in"}
+  </button>
+</form>
+
 
       <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
         Don't have an account?{" "}
@@ -693,6 +742,7 @@ const LoginScreen = ({
     </div>
   </div>
 );
+
 const ResetPasswordScreen = ({
   token,
   setCurrentScreen,
@@ -837,6 +887,14 @@ function App() {
   const [hasSpecialChar, setHasSpecialChar] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [emailError, setEmailError] = useState("");
+const [passwordError, setPasswordError] = useState("");
+const [generalError, setGeneralError] = useState("");
+
+
+const [nameError, setNameError] = useState("");
+
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -919,47 +977,63 @@ function App() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-   
-    if (!email || !password) {
-      setError("Email and password are required.");
-      return;
+  
+    // Reset errors
+    setEmailError("");
+    setPasswordError("");
+    setGeneralError("");
+  
+    let hasError = false;
+  
+    // Email validation
+    if (!email) {
+      setEmailError("Email is required.");
+      hasError = true;
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setEmailError("Enter a valid email address.");
+        hasError = true;
+      }
     }
-
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("Enter a valid email address.");
-      return;
+  
+    // Password validation
+    if (!password) {
+      setPasswordError("Password is required.");
+      hasError = true;
+    } else if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters.");
+      hasError = true;
     }
-
+  
+    if (hasError) return; // stop execution if validation failed
+  
     setLoading(true);
-    setError("");
-
+  
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await res.json();
-
+  
       if (!res.ok) {
-        setError(data.msg || "Login failed. Please try again.");
-        setLoading(false);
+        setGeneralError(data.msg || "Login failed. Please try again.");
         return;
       }
-
+  
       console.log("Login successful:", data);
       localStorage.setItem("token", data.token);
       setCurrentScreen("selectCharacter");
     } catch (err) {
-      setError("Something went wrong. Please try again later.");
+      setGeneralError("Something went wrong. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
+  
 
 
   // const handleLogin = async (e) => {
@@ -995,39 +1069,70 @@ function App() {
   
   const handleSignup = async (e) => {
     e.preventDefault();
-
-
-    if (!name || !email || !password) {
-      setError("All fields are required.");
-      return;
+  
+    let isValid = true;
+  
+    // Reset errors
+    setNameError("");
+    setEmailError("");
+    setPasswordError("");
+    setGeneralError("");
+  
+    // Name validation
+    if (!name.trim()) {
+      setNameError("Name is required.");
+      isValid = false;
     }
-
-    setError("");
+  
+    // Email validation
+    if (!email.trim()) {
+      setEmailError("Email is required.");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Enter a valid email address.");
+      isValid = false;
+    }
+  
+    // Password validation
+    if (!password) {
+      setPasswordError("Password is required.");
+      isValid = false;
+    } else if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters.");
+      isValid = false;
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      setPasswordError("Password must contain at least one special character.");
+      isValid = false;
+    }
+  
+    if (!isValid) return;
+  
     setLoading(true);
-
+  
     try {
       const res = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }), // ✅ Include `name` here!
+        body: JSON.stringify({ name, email, password }),
       });
-
+  
       const data = await res.json();
-
+  
       if (!res.ok) {
-        setError(data.msg || "Signup failed.");
+        setGeneralError(data.msg || "Signup failed.");
         setLoading(false);
         return;
       }
-
+  
       console.log("Signup successful:", data);
       setShowModal(true);
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setGeneralError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+  
 
 
   const handleClose = () => setShowModal(false);
@@ -2478,36 +2583,45 @@ function App() {
       case "login":
         return (
           <LoginScreen
-            error={error}
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
-            setCurrentScreen={handleScreenChange}
-          />
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          handleLogin={handleLogin}
+          setCurrentScreen={handleScreenChange}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          generalError={generalError}
+          emailError={emailError}
+          passwordError={passwordError}
+          loading={loading}
+        />
         );
 
       case "signup":
         return (
           <SignupScreen
-            name={name}
-            setName={setName}
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            handleSignup={handleSignup}
-            showModal={showModal}
-            handleClose={handleClose}
-            handleConfirm={handleConfirm}
-            setCurrentScreen={handleScreenChange}
-            error={error}
-            isLengthValid={isLengthValid}
-            hasSpecialChar={hasSpecialChar}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-          />
+          name={name}
+          setName={setName}
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          handleSignup={handleSignup}
+          showModal={showModal}
+          handleClose={handleClose}
+          handleConfirm={handleConfirm}
+          setCurrentScreen={handleScreenChange}
+          error={generalError}
+          isLengthValid={isLengthValid}
+          hasSpecialChar={hasSpecialChar}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          nameError={nameError}
+          emailError={emailError}
+          passwordError={passwordError}
+          loading={loading}
+        />
         );
       case "forgot":
         return (

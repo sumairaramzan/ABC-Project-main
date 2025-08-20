@@ -189,7 +189,7 @@ const ChooseGame = ({
         ? "300px"
         : isTablet
         ? "300px"
-        : "300px",
+        : "250px",
       // height: isMobile ? "230px" : isTablet ? "180px" : "240px",
       display: "flex",
       flexDirection: "column",
