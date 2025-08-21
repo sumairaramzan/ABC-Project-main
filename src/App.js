@@ -484,11 +484,11 @@ const SignupScreen = ({
       backgroundPosition: "center",
     }}
   >
-    <div className="bg-white bg-opacity-90 p-6 sm:p-10 rounded-xl shadow-md w-full max-w-md flex flex-col h-[90vh] justify-between">
+    <div className="bg-white bg-opacity-90 p-6  rounded-xl shadow-md w-full max-w-md flex flex-col justify-between">
       
       {/* Logo */}
       <div className="flex flex-col items-center">
-        <img src={loginLogo} alt="Logo" className="mb-4 w-28 sm:w-32" />
+        <img src={loginLogo} alt="Logo" className="" />
         <h2 className="text-[#101828] text-[22px] sm:text-[24px] font-semibold text-center">
           Create an account
         </h2>
@@ -496,7 +496,7 @@ const SignupScreen = ({
 
       {/* Form */}
       <form
-        className="space-y-4 flex-1 overflow-y-auto no-scrollbar mt-4"
+        className="space-y-4"
         onSubmit={handleSignup}
       >
         {error && <p className="text-red-600 text-sm">{error}</p>}
@@ -636,7 +636,8 @@ const LoginScreen = ({
   generalError,
   emailError,
   passwordError,
-  loading
+  loading,
+  setError
 }) => (
   <div
     className="w-screen h-screen flex items-center justify-center px-4"
@@ -657,7 +658,7 @@ const LoginScreen = ({
         Sign in to your account
       </h2>
 
-      <form className="space-y-4" onSubmit={handleLogin}>
+      <form className="space-y-3" onSubmit={handleLogin}>
   {/* General error (API failure) */}
   {generalError && (
     <p className="text-red-600 text-sm mb-2 text-center">{generalError}</p>
@@ -721,6 +722,7 @@ const LoginScreen = ({
 
   <button
     type="submit"
+   
     disabled={loading}
     className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition disabled:opacity-50"
   >
@@ -732,9 +734,10 @@ const LoginScreen = ({
       <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
         Don't have an account?{" "}
         <a
+
           href="#"
           className="text-[#295FB5] text-[14px] font-medium hover:underline"
-          onClick={() => setCurrentScreen("signup")}
+          onClick={() => {setCurrentScreen("signup")}}
         >
           Sign up
         </a>
@@ -870,6 +873,82 @@ const ForgotPasswordScreen = ({
   </div>
 );
 
+// ✅ OTP Screen
+const OtpScreen = ({
+  email,
+  otp,
+  setOtp,
+  message,
+  setMessage,
+  error,
+  setError,
+  handleOtpVerify,
+  setCurrentScreen,
+}) => (
+  <div
+    className="w-screen h-screen flex items-center justify-center px-4"
+    style={{
+      backgroundImage: `url(${loginBg})`,
+      backgroundSize: "100% 100%",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+    }}
+  >
+    <div className="bg-white bg-opacity-90 p-6 sm:p-10 rounded-xl shadow-md w-full max-w-md">
+      <div className="flex flex-col items-center mb-6">
+        <img src={loginLogo} alt="Logo" className="mb-2" />
+      </div>
+
+      <h2 className="text-[#101828] text-[24px] font-semibold text-center mb-2">
+        Enter OTP
+      </h2>
+
+      <p className="text-[#475467] text-[14px] font-normal text-center mb-6">
+        Please enter the 6-digit code we sent to your email: <b>{email}</b>
+      </p>
+
+      <form className="space-y-3" onSubmit={handleOtpVerify}>
+        <div>
+          <label className="block text-[#344054] text-[14px] font-medium mb-1">
+            OTP Code
+          </label>
+          <input
+            type="text"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            placeholder="Enter 6-digit OTP"
+            maxLength={6}
+            required
+            className="w-full px-4 py-2 border border-[#D0D5DD] text-[#667085] text-[16px] font-normal rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-[#295FB5] text-white text-[16px] font-semibold py-2 rounded-lg hover:bg-[#1d4ea8] transition"
+        >
+          Verify OTP
+        </button>
+
+        {message && <p className="text-green-600 text-sm mt-2">{message}</p>}
+        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+      </form>
+
+      <p className="text-center text-[#475467] text-[14px] font-normal mt-4">
+        Didn’t receive the code?{" "}
+        <a
+          href="#"
+          className="text-[#295FB5] text-[14px] font-medium hover:underline"
+          onClick={() => setCurrentScreen("forgot")}
+        >
+          Resend
+        </a>
+      </p>
+    </div>
+  </div>
+);
+
+
 function App() {
   const [currentScreen, setCurrentScreen] = useState("login");
   const [resetToken, setResetToken] = useState("");
@@ -893,6 +972,35 @@ const [generalError, setGeneralError] = useState("");
 
 
 const [nameError, setNameError] = useState("");
+
+const [otp, setOtp] = useState("");
+
+const handleOtpVerify = async (e) => {
+  e.preventDefault();
+  setMessage("");
+  setError("");
+
+  try {
+    const res = await fetch("http://localhost:5000/api/auth/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.msg || "Invalid OTP");
+      return;
+    }
+
+    setMessage("OTP verified successfully!");
+    setTimeout(() => setCurrentScreen("resetPassword"), 1000);
+  } catch (err) {
+    setError("Server error, please try again.");
+  }
+};
+
 
 
   useEffect(() => {
@@ -978,37 +1086,11 @@ const [nameError, setNameError] = useState("");
   const handleLogin = async (e) => {
     e.preventDefault();
   
-    // Reset errors
+    // reset errors
     setEmailError("");
     setPasswordError("");
     setGeneralError("");
-  
-    let hasError = false;
-  
-    // Email validation
-    if (!email) {
-      setEmailError("Email is required.");
-      hasError = true;
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        setEmailError("Enter a valid email address.");
-        hasError = true;
-      }
-    }
-  
-    // Password validation
-    if (!password) {
-      setPasswordError("Password is required.");
-      hasError = true;
-    } else if (password.length < 8) {
-      setPasswordError("Password must be at least 8 characters.");
-      hasError = true;
-    }
-  
-    if (hasError) return; // stop execution if validation failed
-  
-    setLoading(true);
+    setError("");
   
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
@@ -1020,22 +1102,25 @@ const [nameError, setNameError] = useState("");
       const data = await res.json();
   
       if (!res.ok) {
+        // show backend error (e.g. "Invalid credentials")
         setGeneralError(data.msg || "Login failed. Please try again.");
+        
         return;
       }
   
       console.log("Login successful:", data);
+  
+      // ✅ Save token & user
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+  
       setCurrentScreen("selectCharacter");
     } catch (err) {
       setGeneralError("Something went wrong. Please try again later.");
-    } finally {
-      setLoading(false);
     }
   };
   
-
-
+  
   // const handleLogin = async (e) => {
   //   e.preventDefault();
   
@@ -1066,7 +1151,7 @@ const [nameError, setNameError] = useState("");
   //     setLoading(false);
   //   }
   // };
-  
+
   const handleSignup = async (e) => {
     e.preventDefault();
   
@@ -1077,6 +1162,7 @@ const [nameError, setNameError] = useState("");
     setEmailError("");
     setPasswordError("");
     setGeneralError("");
+    setError("");
   
     // Name validation
     if (!name.trim()) {
@@ -1084,12 +1170,12 @@ const [nameError, setNameError] = useState("");
       isValid = false;
     }
   
-    // Email validation
+    // Email validation (must have @ and end with .com)
     if (!email.trim()) {
       setEmailError("Email is required.");
       isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError("Enter a valid email address.");
+    } else if (!email.includes("@") || !email.toLowerCase().endsWith(".com")) {
+      setEmailError("Enter a valid email address (must contain @ and end with .com).");
       isValid = false;
     }
   
@@ -1107,8 +1193,6 @@ const [nameError, setNameError] = useState("");
   
     if (!isValid) return;
   
-    setLoading(true);
-  
     try {
       const res = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
@@ -1119,22 +1203,23 @@ const [nameError, setNameError] = useState("");
       const data = await res.json();
   
       if (!res.ok) {
-        setGeneralError(data.msg || "Signup failed.");
-        setLoading(false);
+        setGeneralError(data.msg || "Signup failed. Please try again.");
         return;
       }
   
       console.log("Signup successful:", data);
-      setShowModal(true);
+  
+      // ✅ Save token & user in localStorage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+  
+      setShowModal(true); // show success modal
     } catch (err) {
-      setGeneralError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
+      setGeneralError("Something went wrong. Please try again later.");
     }
   };
   
-
-
+  
   const handleClose = () => setShowModal(false);
   const handleConfirm = () => {
     setShowModal(false);
@@ -2595,6 +2680,7 @@ const [nameError, setNameError] = useState("");
           emailError={emailError}
           passwordError={passwordError}
           loading={loading}
+          setError={setError}
         />
         );
 
@@ -2651,6 +2737,7 @@ const [nameError, setNameError] = useState("");
             handleReset={handleReset}
           />
         );
+        
       // default:
       //   return <HomeScreen setCurrentScreen={handleScreenChange}  goBack={() => setCurrentScreen("selectCharacter")} />;
     }

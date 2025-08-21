@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import nextButtonIcon from '../assets/images/arrowButtons.svg';
 import character from '../assets/images/cartoon1.png';
+import star from "../assets/images/startimageNew.svg"
 
 const AnimatedIntro = ({ onStart }) => {
   const abcControls = useAnimation();
@@ -125,7 +126,8 @@ const AnimatedIntro = ({ onStart }) => {
             zIndex: 10,
           }}
         >
-          ⭐
+          {/* ⭐ */}
+          <img src={star} width={"50px"} />
         </motion.div>
       )}
 

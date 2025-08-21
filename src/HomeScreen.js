@@ -175,7 +175,7 @@ const HomeScreen = ({
       gap: isMobile ? "10px" : "20px",
     },
     card: {
-      width: "250px",
+      width: "300px",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
